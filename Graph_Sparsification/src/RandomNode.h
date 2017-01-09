@@ -17,7 +17,7 @@ public:
 	virtual ~RandomNode();
 
 	// random node sample uniformly, without replacement, exactly sample $sampled_size nodes. return induced graph by those nodes.
-	vector<Edge> get_sampled_graph(vector<vector<int> > &paths, int sampled_size);
+	vector<Edge> get_sampled_graph(const AdjLinkGraph &paths, int sampled_size);
 
 };
 

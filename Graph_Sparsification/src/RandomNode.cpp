@@ -16,7 +16,7 @@ RandomNode::~RandomNode() {
 	// TODO Auto-generated destructor stub
 }
 
-vector<Edge> RandomNode::get_sampled_graph(vector<vector<int> > &paths,
+vector<Edge> RandomNode::get_sampled_graph(const AdjLinkGraph &paths,
 		int sampled_size) {
 	int n = paths.size();
 

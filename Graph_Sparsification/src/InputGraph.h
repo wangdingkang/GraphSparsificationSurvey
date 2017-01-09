@@ -7,7 +7,7 @@
 
 #ifndef SAMPLING_H_
 #define SAMPLING_H_
-#include <bits/stdc++.h>
+#include "Structures.h"
 using namespace std;
 
 typedef pair<int, int> PII;
@@ -16,6 +16,8 @@ class InputGraph {
 public:
 
 	InputGraph(string filename);
+
+	AdjLinkGraph get_paths();
 
 	virtual ~InputGraph();
 

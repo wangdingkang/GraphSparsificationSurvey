@@ -12,7 +12,7 @@
 
 class Landmark {
 public:
-	Landmark(int depth, vector<vector<int> > &paths);
+	Landmark(int depth, const AdjLinkGraph &paths);
 
 	int SEARCH_DEPTH;
 	int sampled_size;

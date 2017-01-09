@@ -14,6 +14,10 @@ InputGraph:: InputGraph(string filename) {
 	read_in_graph();
 }
 
+AdjLinkGraph InputGraph::get_paths() {
+	return this->paths;
+}
+
 void InputGraph::read_in_graph() {
 	ifstream fin;
 	fin.open(filename);

@@ -7,7 +7,7 @@
 
 #include "Landmark.h"
 
-Landmark::Landmark(int _depth, vector<vector<int> >& _paths) {
+Landmark::Landmark(int _depth, const AdjLinkGraph& _paths) {
 	this->SEARCH_DEPTH = _depth;
 	this->paths = _paths;
 	this->sampled_size = 0;
