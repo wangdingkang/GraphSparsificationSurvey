@@ -11,7 +11,6 @@
 InputGraph:: InputGraph(string filename) {
 	N = M = 0;
 	this->filename = filename;
-	InputGraph();
 	read_in_graph();
 }
 
