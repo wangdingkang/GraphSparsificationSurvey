@@ -60,7 +60,7 @@ EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& g,
 	const auto& v0_vec = random_ints(g.size(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
 	unordered_set<int> v_selected(v_prev);
-	while(v_selected.size() < arg_SN) {
+	while((int)v_selected.size() < arg_SN) {
 		unordered_set<int> v_i;
 
 		for (const auto& vertex : v_prev) {
