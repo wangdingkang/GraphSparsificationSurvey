@@ -10,8 +10,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int, int> PII;
-
 struct Edge {
 	int u, v;
 	int w;
@@ -43,6 +41,11 @@ struct Sort_Element {
 
 
 };
+
+
+typedef pair<int, int> PII;
+typedef vector<Edge> EdgeGraph;
+typedef vector<vector<int> > AdjLinkGraph;
 
 
 #endif /* STRUCTURES_H_ */
