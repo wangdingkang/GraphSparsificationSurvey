@@ -5,8 +5,8 @@
 #include "Snowball.h"
 #include "Landmark.h"
 
-#define INPUT_FILENAME string("input/LCC_CA-GrQc.txt")
-#define OUTPUT_FILENAME string("LCC_CA-GrQc.txt")
+#define INPUT_FILENAME string("input/LCC_CA-Hepth.txt")
+#define OUTPUT_FILENAME string("LCC_CA-Hepth.txt")
 #define LANDMARK_DEPTH 2
 #define SAMPLE_SIZE 1000
 #define SNOWBALL_N 10
@@ -21,7 +21,7 @@ int main() {
 	// Landmark Sampling
 	Landmark* l = new Landmark(LANDMARK_DEPTH, g->get_paths());
 	EdgeGraph o1 = l->get_sampled_graph();
-	out->output("output/landmark_" + OUTPUT_FILENAME, o1);
+	out->output_weighted("output/landmark_" + OUTPUT_FILENAME, o1);
 	delete l;
 
 	cout << "Landmark Sampling Finished." << endl;
