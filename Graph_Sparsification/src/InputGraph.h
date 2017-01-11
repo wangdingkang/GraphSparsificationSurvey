@@ -25,7 +25,7 @@ private:
 
 	string filename;
 
-	int N, M; // #nodes, #edges of the original graph.
+	int N; // #nodes, #edges of the original graph.
 
 	vector<vector<int>> paths; // edges in the original graph.
 

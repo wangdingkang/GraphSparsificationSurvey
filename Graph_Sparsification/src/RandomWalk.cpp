@@ -65,15 +65,15 @@ vector<int> RandomWalk::rw_sampled_points(const AdjLinkGraph& paths,
 	memset(visited, false, sizeof(visited));
 
 	// if walk too long, and still get too few points, just return the sampled points.
-	while ((int) ret.size() < sampled_size && iterations < 10 * sampled_size) {
+	while ((int) ret.size() < sampled_size && iterations < 5 * sampled_size) {
 		if (!visited[s]) {
 			ret.push_back(s);
 			visited[s] = true;
 		}
 		int m = paths[s].size();
-		srand(time(NULL));
 		int next = rand() % m;
 		s = paths[s][next];
+		iterations++;
 	}
 	return ret;
 }
@@ -90,25 +90,23 @@ vector<int> RandomWalk::rwj_sampled_points(const AdjLinkGraph& paths,
 	memset(visited, false, sizeof(visited));
 
 	// if walk too long, and still get too few points, just return the sampled points.
-	while ((int) ret.size() < sampled_size && iterations < 10 * sampled_size) {
+	while ((int) ret.size() < sampled_size && iterations < 5 * sampled_size) {
 		if (!visited[s]) {
 			ret.push_back(s);
 			visited[s] = true;
 		}
 
-		srand(time(NULL));
 		double f = (double) rand() / RAND_MAX;
 
 		if (f > jump_prob) {
 			int m = paths[s].size();
-			srand(time(NULL));
 			int next = rand() % m;
 			s = paths[s][next];
 		} else { // jump to a random point.
-			srand(time(NULL));
 			int next = rand() % n;
 			s = next;
 		}
+		iterations++;
 	}
 
 	return ret;

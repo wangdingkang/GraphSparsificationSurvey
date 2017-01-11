@@ -8,8 +8,8 @@
 #include "InputGraph.h"
 
 
-InputGraph:: InputGraph(string filename) {
-	N = M = 0;
+InputGraph::InputGraph(string filename) {
+	N = 0;
 	this->filename = filename;
 	read_in_graph();
 }
@@ -21,18 +21,12 @@ AdjLinkGraph InputGraph::get_paths() {
 void InputGraph::read_in_graph() {
 	ifstream fin;
 	fin.open(filename);
-	fin >> N >> M;
+	fin >> N;
 	paths = vector<vector<int> >(N, vector<int>());
 	int a, b;
-	for (int i = 0; i < M; i++) {
-		fin >> a >> b;
+	while(fin >> a >> b){
 		paths[a].push_back(b);
-		/*
-		 * duplicate edges?/??? see the input file to decide.
-		 *
-		 *
-		 */
-		// paths[b].push_back(a);
+		paths[b].push_back(a);
 	}
 	fin.close();
 }
