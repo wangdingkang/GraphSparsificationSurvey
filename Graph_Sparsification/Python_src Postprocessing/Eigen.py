@@ -1,16 +1,21 @@
 import networkx as nx
 import scipy.sparse as ss
-import numpy as np
+from os import listdir
+from os.path import isfile, join
+
+input_folder = "processed/"
 
 if __name__ == '__main__':
-    G = nx.read_edgelist('output from c++')
+    onlyfiles = [join(input_folder, f) for f in listdir(input_folder) if isfile(join(input_folder, f))]
 
-    A = nx.laplacian_matrix(G)
+    for filename in onlyfiles:
+        G = nx.read_edgelist(filename)
 
-    L = ss.csgraph.laplacian(A)
+        L = nx.laplacian_matrix(G)
 
-    vals, vecs = ss.linalg.eigsh(L, k=3, which='BE')
+        vals, vecs = ss.linalg.eigsh(L.asfptype(), k=3, which='BE')
 
-    print(vals)
+        print(filename, ": ", vals)
 
-    print(ans)
+
+
