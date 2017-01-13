@@ -11,6 +11,8 @@
 #define SAMPLE_SIZE 1000
 #define SNOWBALL_N 10
 #define SNOWBALL_K 5
+#define FOREST_FIRE_N 10
+#define FOREST_FIRE_K 5
 
 int main() {
 	InputGraph* g = new InputGraph(INPUT_FILENAME);
@@ -49,6 +51,14 @@ int main() {
 	delete sb;
 
 	cout << "Snowball Sampling Finished." << endl;
+
+	// Forest Fire Sampling
+	ForestFireSampling* ffs = new ForestFireSampling();
+	EdgeGraph o5 = ffs->ffs_sampling_with_size(g->get_paths(), FOREST_FIRE_N, FOREST_FIRE_K, SAMPLE_SIZE);
+	out->output("output/forest_fire_" + OUTPUT_FILENAME, o5);
+	delete ffs;
+
+	cout << "Forest Fire Sampling Finished." << endl;
 
 	delete out;
 	delete g;
