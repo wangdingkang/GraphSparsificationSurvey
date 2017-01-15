@@ -15,7 +15,7 @@ ForestFireSampling::ForestFireSampling() {
 EdgeGraph ForestFireSampling::get_sampled_graph(const AdjLinkGraph& g,
 		int arg_N, int arg_K, int arg_T) {
 	GeometricRandomGenerator generator(arg_K);
-	EdgeGraph g_sample(g.size());
+	EdgeGraph g_sample;
 	const auto& v0_vec = random_ints(g.size(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
 	unordered_set<int> v_selected(v_prev);
@@ -47,7 +47,7 @@ EdgeGraph ForestFireSampling::get_sampled_graph(const AdjLinkGraph& g,
 EdgeGraph ForestFireSampling::ffs_sampling_with_size(const AdjLinkGraph &g,
 		int arg_N, int arg_K, int arg_SN) {
 	GeometricRandomGenerator generator(arg_K);
-	EdgeGraph g_sample(g.size());
+	EdgeGraph g_sample;
 	const auto& v0_vec = random_ints(g.size(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
 	unordered_set<int> v_selected(v_prev);

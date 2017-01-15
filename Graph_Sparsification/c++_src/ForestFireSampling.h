@@ -8,8 +8,7 @@
 #ifndef FORESTFIRESAMPLING_H_
 #define FORESTFIRESAMPLING_H_
 
-#include <bits/stdc++.h>
-using namespace std;
+#include "Structures.h"
 
 class ForestFireSampling {
 public:

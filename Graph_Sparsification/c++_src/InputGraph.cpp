@@ -9,7 +9,7 @@
 
 
 InputGraph::InputGraph(string filename) {
-	N = 0;
+	N = M = 0;
 	this->filename = filename;
 	read_in_graph();
 }
@@ -25,6 +25,7 @@ void InputGraph::read_in_graph() {
 	paths = vector<vector<int> >(N, vector<int>());
 	int a, b;
 	while(fin >> a >> b){
+		++M;
 		paths[a].push_back(b);
 		paths[b].push_back(a);
 	}

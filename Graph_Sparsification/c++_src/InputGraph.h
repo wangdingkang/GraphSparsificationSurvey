@@ -19,13 +19,17 @@ public:
 
 	AdjLinkGraph get_paths();
 
+	void show() {
+		cout << N << " nodes, and " << M << " edges." << endl;
+	}
+
 	virtual ~InputGraph();
 
 private:
 
 	string filename;
 
-	int N; // #nodes, #edges of the original graph.
+	int N, M; // #nodes, #edges of the original graph.
 
 	vector<vector<int>> paths; // edges in the original graph.
 
