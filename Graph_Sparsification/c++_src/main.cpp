@@ -28,7 +28,7 @@ int main() {
 	// Landmark Sampling
 	cout << "Landmark Sampling with depth = " << LANDMARK_DEPTH << "." << endl;
 	Landmark* l = new Landmark(LANDMARK_DEPTH, g->get_paths());
-	EdgeGraph o1 = l->get_sampled_graph();
+	EdgeGraph o1 = l->get_sampled_graph_degree_biased();
 	cout << "Landmark Sampling sampled " << l->sampled_size << " nodes." << endl;
 	out->output_weighted("output/landmark_" + string("depth_") + to_string(LANDMARK_DEPTH) + "_" + OUTPUT_FILENAME, o1);
 	delete l;

@@ -16,10 +16,18 @@ public:
 
 	int SEARCH_DEPTH;
 	int sampled_size;
-	vector<int> visited;
-	vector<Sort_Element> degree;
+	int N;
+
 	vector<vector<int> > paths;
-	vector<Edge> get_sampled_graph();
+
+	vector<Edge> get_sampled_graph_degree_biased();
+
+	vector<Edge> get_sampled_graph_degree_biased_random_assignment();
+
+	vector<Edge> get_sampled_graph_uniform_random_assignment();
+
+	vector<Edge> get_sampled_graph_farthest_biased();
+
 	virtual ~Landmark();
 
 
@@ -33,7 +41,11 @@ private:
 	 * weight between any two cluster(landmark), it's the number of connections between two landmark.
 	 */
 
-	void bfs_search(int s);
+	void bfs_search(int s, vector<int>& visited);
+
+	void bfs_search(int s, vector<vector<int> >& visited);
+
+	void bfs_cover(int s, vector<int>& depth);
 };
 
 #endif /* LANDMARK_H_ */
