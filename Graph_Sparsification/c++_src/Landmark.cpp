@@ -26,12 +26,12 @@ vector<Edge> Landmark::get_sampled_graph_farthest_biased() {
 	for (int i = 0; i < N; i++)
 		depth[i] = N;
 
-	while (s != -1) {
+	while(s != -1) {
 		bfs_search(s, visited);
 		bfs_cover(s, depth);
 		sampled_size++;
 		s = -1;
-		int max_d = 0;
+		int max_d = SEARCH_DEPTH;
 		for (int i = 0; i < N; i++) {
 			if (depth[i] > max_d) {
 				s = i;
@@ -250,7 +250,6 @@ void Landmark::bfs_search(int s, vector<vector<int> >& visited) {
 		for (auto child : paths[ri]) {
 			if (rdep < SEARCH_DEPTH)
 				bfs_queue.push(make_pair(child, rdep + 1));
-
 		}
 	}
 

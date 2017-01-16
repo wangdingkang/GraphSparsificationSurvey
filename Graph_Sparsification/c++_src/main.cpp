@@ -28,9 +28,26 @@ int main() {
 	// Landmark Sampling
 	cout << "Landmark Sampling with depth = " << LANDMARK_DEPTH << "." << endl;
 	Landmark* l = new Landmark(LANDMARK_DEPTH, g->get_paths());
-	EdgeGraph o1 = l->get_sampled_graph_degree_biased();
-	cout << "Landmark Sampling sampled " << l->sampled_size << " nodes." << endl;
-	out->output_weighted("output/landmark_" + string("depth_") + to_string(LANDMARK_DEPTH) + "_" + OUTPUT_FILENAME, o1);
+	EdgeGraph o1;
+//	// based on the degree, selected the nodes with largest degree first.
+//	o1 = l->get_sampled_graph_degree_biased();
+//	cout << "Landmark Sampling basic degree biased sampled " << l->sampled_size << " nodes." << endl;
+//	out->output_weighted("output/landmark_degree_biased_" + string("depth_") + to_string(LANDMARK_DEPTH) + "_" + OUTPUT_FILENAME, o1);
+//
+	// same as the above one, but assign node to a random landmark if it can be reached by multiple landmarks.
+//	o1 = l->get_sampled_graph_degree_biased_random_assignment();
+//	cout << "Landmark Sampling degree biased with random assignment " << l->sampled_size << " nodes." << endl;
+//	out->output_weighted("output/landmark_degree_biased_random_assignment_" + string("depth_") + to_string(LANDMARK_DEPTH) + "_" + OUTPUT_FILENAME, o1);
+//
+//	// uniform sample with random assignment.
+//	o1 = l->get_sampled_graph_uniform_random_assignment();
+//	cout << "Landmark Sampling random sampling with random assignment " << l->sampled_size << " nodes." << endl;
+//	out->output_weighted("output/landmark_degree_biased_random_assignment_" + string("depth_") + to_string(LANDMARK_DEPTH) + "_" + OUTPUT_FILENAME, o1);
+//
+//	// farthest sample
+	o1 = l->get_sampled_graph_farthest_biased();
+	cout << "Landmark Sampling farthest sampling with random assignment " << l->sampled_size << " nodes." << endl;
+	out->output_weighted("output/landmark_farthest_sampling_random_assignment_" + string("depth_") + to_string(LANDMARK_DEPTH) + "_" + OUTPUT_FILENAME, o1);
 	delete l;
 
 	cout << "Landmark Sampling Finished." << endl;
