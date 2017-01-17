@@ -9,6 +9,7 @@
 
 RandomWalk::RandomWalk() {
 	// TODO Auto-generated constructor stub
+	sampled_size = 0;
 }
 
 vector<Edge> RandomWalk::get_sampled_graph(const AdjLinkGraph& paths,
@@ -34,6 +35,7 @@ vector<Edge> RandomWalk::graph_from_sampled_points(const AdjLinkGraph& paths,
 		vector<int> &nodes) {
 	vector<Edge> ret;
 	int n = paths.size();
+	sampled_size = nodes.size();
 	bool has_this_point[n];
 	memset(has_this_point, false, sizeof(has_this_point));
 	for (auto p : nodes) {

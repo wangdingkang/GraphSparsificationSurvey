@@ -14,6 +14,8 @@ class ForestFireSampling {
 public:
 	ForestFireSampling();
 
+	int sampled_size;
+
 	EdgeGraph get_sampled_graph(const AdjLinkGraph& g, int arg_N, int arg_K,
 			int arg_T);
 

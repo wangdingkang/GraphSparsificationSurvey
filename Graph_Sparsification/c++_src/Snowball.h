@@ -14,6 +14,8 @@ class Snowball {
 public:
 	Snowball();
 
+	int sampled_size;
+
 	EdgeGraph snowball_sampling(const AdjLinkGraph& g, int arg_N, int arg_K, int arg_T);
 
 	EdgeGraph snowball_sampling_with_size(const AdjLinkGraph& g, int arg_N, int arg_K, int arg_SN);

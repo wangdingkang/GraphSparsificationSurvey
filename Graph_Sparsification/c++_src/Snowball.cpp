@@ -9,7 +9,7 @@
 
 Snowball::Snowball() {
 	// TODO Auto-generated constructor stub
-
+	sampled_size = 0;
 }
 
 vector<int> Snowball::random_ints(int n, int k) {
@@ -27,6 +27,7 @@ vector<int> Snowball::random_ints(int n, int k) {
 
 EdgeGraph Snowball::snowball_sampling(const AdjLinkGraph& g, int arg_N,
 		int arg_K, int arg_T) {
+	sampled_size = 0;
 	EdgeGraph g_sample;
 	const auto& v0_vec = random_ints(g.size(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
@@ -51,11 +52,13 @@ EdgeGraph Snowball::snowball_sampling(const AdjLinkGraph& g, int arg_N,
 			}
 		}
 	}
+	sampled_size = v_selected.size();
 	return g_sample;
 }
 
 EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& g,
 		int arg_N, int arg_K, int arg_SN) {
+	sampled_size = 0;
 	EdgeGraph g_sample;
 	const auto& v0_vec = random_ints(g.size(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
@@ -79,6 +82,7 @@ EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& g,
 			}
 		}
 	}
+	sampled_size = v_selected.size();
 	return g_sample;
 }
 

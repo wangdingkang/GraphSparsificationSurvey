@@ -9,11 +9,12 @@
 
 ForestFireSampling::ForestFireSampling() {
 	// TODO Auto-generated constructor stub
-
+	sampled_size = 0;
 }
 
 EdgeGraph ForestFireSampling::get_sampled_graph(const AdjLinkGraph& g,
 		int arg_N, int arg_K, int arg_T) {
+	sampled_size = 0;
 	GeometricRandomGenerator generator(arg_K);
 	EdgeGraph g_sample;
 	const auto& v0_vec = random_ints(g.size(), arg_N);
@@ -41,11 +42,13 @@ EdgeGraph ForestFireSampling::get_sampled_graph(const AdjLinkGraph& g,
 			}
 		}
 	}
+	sampled_size = v_selected.size();
 	return g_sample;
 }
 
 EdgeGraph ForestFireSampling::ffs_sampling_with_size(const AdjLinkGraph &g,
 		int arg_N, int arg_K, int arg_SN) {
+	sampled_size = 0;
 	GeometricRandomGenerator generator(arg_K);
 	EdgeGraph g_sample;
 	const auto& v0_vec = random_ints(g.size(), arg_N);
@@ -73,6 +76,7 @@ EdgeGraph ForestFireSampling::ffs_sampling_with_size(const AdjLinkGraph &g,
 			}
 		}
 	}
+	sampled_size = v_selected.size();
 	return g_sample;
 }
 

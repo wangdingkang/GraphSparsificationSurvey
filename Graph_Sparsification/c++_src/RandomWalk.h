@@ -21,6 +21,8 @@ class RandomWalk {
 public:
 	RandomWalk();
 
+	int sampled_size;
+
 	vector<Edge> get_sampled_graph(const AdjLinkGraph& paths, int sampled_size, random_walk_type t, double p = 0.1);
 
 	virtual ~RandomWalk();
