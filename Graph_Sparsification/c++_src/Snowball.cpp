@@ -25,11 +25,11 @@ vector<int> Snowball::random_ints(int n, int k) {
 	return vector<int>(v.begin(), v.begin() + k);
 }
 
-EdgeGraph Snowball::snowball_sampling(const AdjLinkGraph& g, int arg_N,
+EdgeGraph Snowball::snowball_sampling(const AdjLinkGraph& graph, int arg_N,
 		int arg_K, int arg_T) {
 	sampled_size = 0;
 	EdgeGraph g_sample;
-	const auto& v0_vec = random_ints(g.size(), arg_N);
+	const auto& v0_vec = random_ints(graph.get_num_of_nodes(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
 	unordered_set<int> v_selected(v_prev);
 
@@ -37,9 +37,9 @@ EdgeGraph Snowball::snowball_sampling(const AdjLinkGraph& g, int arg_N,
 		unordered_set<int> v_i;
 
 		for (const auto& vertex : v_prev) {
-			const auto& edge_indices = random_ints(g[vertex].size(), arg_K);
+			const auto& edge_indices = random_ints(graph.get_num_edge_of_node(vertex), arg_K);
 			for (const auto& idx : edge_indices) {
-				const auto& neighbor = g[vertex][idx];
+				const auto& neighbor = graph.get_neighbor_of_node(vertex, idx);
 				v_i.insert(neighbor);
 				g_sample.push_back(Edge(vertex, neighbor, 1));
 			}
@@ -56,20 +56,20 @@ EdgeGraph Snowball::snowball_sampling(const AdjLinkGraph& g, int arg_N,
 	return g_sample;
 }
 
-EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& g,
+EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& graph,
 		int arg_N, int arg_K, int arg_SN) {
 	sampled_size = 0;
 	EdgeGraph g_sample;
-	const auto& v0_vec = random_ints(g.size(), arg_N);
+	const auto& v0_vec = random_ints(graph.get_num_of_nodes(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
 	unordered_set<int> v_selected(v_prev);
 	while((int)v_selected.size() < arg_SN) {
 		unordered_set<int> v_i;
 
 		for (const auto& vertex : v_prev) {
-			const auto& edge_indices = random_ints(g[vertex].size(), arg_K);
+			const auto& edge_indices = random_ints(graph.get_num_edge_of_node(vertex), arg_K);
 			for (const auto& idx : edge_indices) {
-				const auto& neighbor = g[vertex][idx];
+				const auto& neighbor = graph.get_neighbor_of_node(vertex, idx);
 				v_i.insert(neighbor);
 				g_sample.push_back(Edge(vertex, neighbor, 1));
 			}

@@ -28,7 +28,7 @@ int main() {
 
 	// Landmark Sampling
 	cout << "Landmark Sampling with depth = " << LANDMARK_DEPTH << "." << endl;
-	Landmark* l = new Landmark(LANDMARK_DEPTH, g->get_paths());
+	Landmark* l = new Landmark(LANDMARK_DEPTH, g->get_graph());
 	EdgeGraph o1;
 	// based on the degree, selected the nodes with largest degree first.
 	o1 = l->get_sampled_graph_degree_biased();
@@ -55,7 +55,7 @@ int main() {
 
 	// RandomNode Sampling
 	RandomNode* rn = new RandomNode();
-	EdgeGraph o2 = rn->get_sampled_graph(g->get_paths(), SAMPLE_SIZE);
+	EdgeGraph o2 = rn->get_sampled_graph(g->get_graph(), SAMPLE_SIZE);
 	cout << "Random Node Sampling sampled " << SAMPLE_SIZE << " nodes." << endl;
 	out->output("output/random_node_" + OUTPUT_FILENAME, o2);
 	delete rn;
@@ -64,7 +64,7 @@ int main() {
 
 	// RandomWalk Sampling
 	RandomWalk* rw = new RandomWalk();
-	EdgeGraph o3 = rw->get_sampled_graph(g->get_paths(), SAMPLE_SIZE, RANDOM_WALK);
+	EdgeGraph o3 = rw->get_sampled_graph(g->get_graph(), SAMPLE_SIZE, RANDOM_WALK);
 	cout << "Random Walk Sampling sampled " <<  rw->sampled_size << " nodes." << endl;
 	out->output("output/random_walk_" + OUTPUT_FILENAME, o3);
 	delete rw;
@@ -73,7 +73,7 @@ int main() {
 
 	// Snowball Sampling
 	Snowball* sb = new Snowball();
-	EdgeGraph o4 = sb->snowball_sampling_with_size(g->get_paths(), SNOWBALL_N, SNOWBALL_K, SAMPLE_SIZE);
+	EdgeGraph o4 = sb->snowball_sampling_with_size(g->get_graph(), SNOWBALL_N, SNOWBALL_K, SAMPLE_SIZE);
 	cout << "Snowball Sampling with size sampled " << sb->sampled_size << " nodes." << endl;
 	out->output("output/snowball_" + OUTPUT_FILENAME, o4);
 	delete sb;
@@ -82,7 +82,7 @@ int main() {
 
 	// Forest Fire Sampling
 	ForestFireSampling* ffs = new ForestFireSampling();
-	EdgeGraph o5 = ffs->ffs_sampling_with_size(g->get_paths(), FOREST_FIRE_N, FOREST_FIRE_K, SAMPLE_SIZE);
+	EdgeGraph o5 = ffs->ffs_sampling_with_size(g->get_graph(), FOREST_FIRE_N, FOREST_FIRE_K, SAMPLE_SIZE);
 	cout << "Forest Fire Sampling with size sampled " << ffs->sampled_size << " nodes." << endl;
 	out->output("output/forest_fire_" + OUTPUT_FILENAME, o5);
 	delete ffs;

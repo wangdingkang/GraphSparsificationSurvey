@@ -7,31 +7,65 @@
 
 #include "InputGraph.h"
 
-
 InputGraph::InputGraph(string filename) {
 	N = M = 0;
 	this->filename = filename;
 	read_in_graph();
 }
 
-AdjLinkGraph InputGraph::get_paths() {
-	return this->paths;
+AdjLinkGraph InputGraph::get_graph() {
+	return this->graph;
+}
+
+vector<string> InputGraph::split(string s) {
+	std::istringstream iss(s);
+	vector<string> ret;
+	do {
+		std::string sub;
+		iss >> sub;
+		ret.push_back(sub);
+	} while (iss);
+	return ret;
 }
 
 void InputGraph::read_in_graph() {
 	ifstream fin;
 	fin.open(filename);
 	fin >> N;
-	paths = vector<vector<int> >(N, vector<int>());
-	int a, b;
-	while(fin >> a >> b){
-		++M;
-		paths[a].push_back(b);
-		paths[b].push_back(a);
+	graph = AdjLinkGraph(false, N);
+	int u, v;
+	double w;
+	string temp;
+	vector<string> t;
+	std::getline(fin, temp);
+
+	t = split(temp);
+	if (t.size() == 3) {
+		cout << "Input file is weighted." << endl;
+		graph.weighted = true;
+		graph.insert_link(std::stoi(t[0]), std::stoi(t[1]), std::stod(t[2]));
+		graph.insert_link(std::stoi(t[1]), std::stoi(t[0]), std::stod(t[2]));
+		while (fin >> u >> v >> w) {
+			graph.insert_link(u, v, w);
+			graph.insert_link(v, u, w);
+		}
+		graph.init_degree();
+	} else if (t.size() == 2) {
+		cout << "Input file is unweighted." << endl;
+		graph.weighted = false;
+		graph.insert_link(std::stoi(t[0]), std::stoi(t[1]));
+		graph.insert_link(std::stoi(t[1]), std::stoi(t[0]));
+		while (fin >> u >> v >> w) {
+			graph.insert_link(u, v);
+			graph.insert_link(v, u);
+		}
+		graph.init_degree();
+	} else {
+		cout << "Input file is not a valid adjacent link table of a graph."
+				<< endl;
 	}
 	fin.close();
 }
-
 
 InputGraph::~InputGraph() {
 	// TODO Auto-generated destructor stub

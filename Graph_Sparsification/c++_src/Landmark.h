@@ -12,13 +12,13 @@
 
 class Landmark {
 public:
-	Landmark(int depth, const AdjLinkGraph &paths);
+	Landmark(int depth, const AdjLinkGraph &graph);
 
 	int SEARCH_DEPTH;
 	int sampled_size;
 	int N;
 
-	vector<vector<int> > paths;
+	AdjLinkGraph graph;
 
 	vector<Edge> get_sampled_graph_degree_biased();
 

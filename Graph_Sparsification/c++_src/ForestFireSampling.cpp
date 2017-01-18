@@ -17,21 +17,18 @@ EdgeGraph ForestFireSampling::get_sampled_graph(const AdjLinkGraph& g,
 	sampled_size = 0;
 	GeometricRandomGenerator generator(arg_K);
 	EdgeGraph g_sample;
-	const auto& v0_vec = random_ints(g.size(), arg_N);
+	const auto& v0_vec = random_ints(g.get_num_of_nodes(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
 	unordered_set<int> v_selected(v_prev);
 	for (int i = 1; i <= arg_T; ++i) {
 		unordered_set<int> v_i;
 		for (const auto& vertex : v_prev) {
-			const auto& edge_indices = random_ints(g[vertex].size(),
+			const auto& edge_indices = random_ints(g.get_num_edge_of_node(vertex),
 					generator());
 			for (const auto& idx : edge_indices) {
-				const auto& neighbor = g[vertex][idx];
+				const auto& neighbor = g.get_neighbor_of_node(vertex, idx);
 				v_i.insert(neighbor);
-				g_sample.push_back(Edge(vertex, neighbor, 1));
-//				g_sample[vertex].push_back(g[vertex][idx]);
-//				g_sample[g[vertex][idx].first].push_back( { vertex,
-//						g[vertex][idx].second });
+				g_sample.push_back(Edge(vertex, neighbor, g.get_weight(vertex, idx)));
 			}
 		}
 		v_prev.clear();
@@ -51,21 +48,18 @@ EdgeGraph ForestFireSampling::ffs_sampling_with_size(const AdjLinkGraph &g,
 	sampled_size = 0;
 	GeometricRandomGenerator generator(arg_K);
 	EdgeGraph g_sample;
-	const auto& v0_vec = random_ints(g.size(), arg_N);
+	const auto& v0_vec = random_ints(g.get_num_of_nodes(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
 	unordered_set<int> v_selected(v_prev);
 	while((int)v_selected.size() < arg_SN) {
 		unordered_set<int> v_i;
 		for (const auto& vertex : v_prev) {
-			const auto& edge_indices = random_ints(g[vertex].size(),
+			const auto& edge_indices = random_ints(g.get_num_edge_of_node(vertex),
 					generator());
 			for (const auto& idx : edge_indices) {
-				const auto& neighbor = g[vertex][idx];
+				const auto& neighbor = g.get_neighbor_of_node(vertex, idx);
 				v_i.insert(neighbor);
-				g_sample.push_back(Edge(vertex, neighbor, 1));
-				//				g_sample[vertex].push_back(g[vertex][idx]);
-				//				g_sample[g[vertex][idx].first].push_back( { vertex,
-				//						g[vertex][idx].second });
+				g_sample.push_back(Edge(vertex, neighbor, g.get_weight(vertex, idx)));
 			}
 		}
 		v_prev.clear();

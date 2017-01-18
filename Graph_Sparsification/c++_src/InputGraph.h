@@ -17,7 +17,7 @@ public:
 
 	InputGraph(string filename);
 
-	AdjLinkGraph get_paths();
+	AdjLinkGraph get_graph();
 
 	void show() {
 		cout << N << " nodes, and " << M << " edges." << endl;
@@ -31,12 +31,13 @@ private:
 
 	int N, M; // #nodes, #edges of the original graph.
 
-	vector<vector<int>> paths; // edges in the original graph.
+	AdjLinkGraph graph; // edges in the original graph.
 
 	int cnt_index = 0;
 
 	void read_in_graph(); // read input file, starting with #nodes, and #edges, following by m edges u --> v, u, v are the indexes of endpoints.
 
+	vector<string> split(string s); // check if the input graph is weighted or not.
 
 };
 

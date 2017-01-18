@@ -23,19 +23,19 @@ public:
 
 	int sampled_size;
 
-	vector<Edge> get_sampled_graph(const AdjLinkGraph& paths, int sampled_size, random_walk_type t, double p = 0.1);
+	vector<Edge> get_sampled_graph(const AdjLinkGraph& graph, int sampled_size, random_walk_type t, double p = 0.1);
 
 	virtual ~RandomWalk();
 
 
 private:
 
-	vector<int> rw_sampled_points(const AdjLinkGraph& paths, int sampled_size);
+	vector<int> rw_sampled_points(const AdjLinkGraph& graph, int sampled_size);
 
 	// random walk with jump.
-	vector<int> rwj_sampled_points(const AdjLinkGraph& paths, int sampled_size, double jump_prob );
+	vector<int> rwj_sampled_points(const AdjLinkGraph& graph, int sampled_size, double jump_prob );
 
-	vector<Edge> graph_from_sampled_points(const AdjLinkGraph& paths, vector<int> &nodes);
+	vector<Edge> graph_from_sampled_points(const AdjLinkGraph& graph, vector<int> &nodes);
 };
 
 #endif /* RANDOMWALK_H_ */

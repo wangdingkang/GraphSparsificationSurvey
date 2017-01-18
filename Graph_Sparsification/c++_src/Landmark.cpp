@@ -7,11 +7,11 @@
 
 #include "Landmark.h"
 
-Landmark::Landmark(int _depth, const AdjLinkGraph& _paths) {
+Landmark::Landmark(int _depth, const AdjLinkGraph& _graph) {
 	this->SEARCH_DEPTH = _depth;
-	this->paths = _paths;
+	this->graph = _graph;
 	this->sampled_size = 0;
-	this->N = _paths.size();
+	this->N = graph.get_num_of_nodes();
 }
 
 vector<Edge> Landmark::get_sampled_graph_farthest_biased() {
@@ -48,9 +48,9 @@ vector<Edge> Landmark::get_sampled_graph_farthest_biased() {
 
 	map<pair<int, int>, int> connections;
 	for (int i = 0; i < N; i++) {
-		for (auto v : paths[i]) {
+		for (auto t : graph.adjlink[i]) {
 			int fc = visited[i][0];
-			int tc = visited[v][0];
+			int tc = visited[t.v][0];
 			if (fc != tc) {
 				int mic = min(fc, tc);
 				int mac = max(fc, tc);
@@ -79,7 +79,7 @@ vector<Edge> Landmark::get_sampled_graph_degree_biased_random_assignment() {
 
 	for (int i = 0; i < N; i++) {
 		degree[i].index = i;
-		degree[i].value = paths[i].size();
+		degree[i].value = graph.get_degree_of_node(i);
 	}
 
 	sort(degree.begin(), degree.end());
@@ -100,9 +100,9 @@ vector<Edge> Landmark::get_sampled_graph_degree_biased_random_assignment() {
 
 	map<pair<int, int>, int> connections;
 	for (int i = 0; i < N; i++) {
-		for (auto v : paths[i]) {
+		for (auto t : graph.adjlink[i]) {
 			int fc = visited[i][0];
-			int tc = visited[v][0];
+			int tc = visited[t.v][0];
 			if (fc != tc) {
 				int mic = min(fc, tc);
 				int mac = max(fc, tc);
@@ -132,7 +132,7 @@ vector<Edge> Landmark::get_sampled_graph_degree_biased() {
 
 	for (int i = 0; i < N; i++) {
 		degree[i].index = i;
-		degree[i].value = paths[i].size();
+		degree[i].value = graph.get_degree_of_node(i);
 	}
 
 	sort(degree.begin(), degree.end());
@@ -147,9 +147,9 @@ vector<Edge> Landmark::get_sampled_graph_degree_biased() {
 
 	map<pair<int, int>, int> connections;
 	for (int i = 0; i < N; i++) {
-		for (auto v : paths[i]) {
+		for (auto t : graph.adjlink[i]) {
 			int fc = visited[i];
-			int tc = visited[v];
+			int tc = visited[t.v];
 			if (fc != tc) {
 				int mic = min(fc, tc);
 				int mac = max(fc, tc);
@@ -197,9 +197,9 @@ vector<Edge> Landmark::get_sampled_graph_uniform_random_assignment() {
 
 	map<pair<int, int>, int> connections;
 	for (int i = 0; i < N; i++) {
-		for (auto v : paths[i]) {
+		for (auto t : graph.adjlink[i]) {
 			int fc = visited[i][0];
-			int tc = visited[v][0];
+			int tc = visited[t.v][0];
 			if (fc != tc) {
 				int mic = min(fc, tc);
 				int mac = max(fc, tc);
@@ -229,10 +229,10 @@ void Landmark::bfs_search(int s, vector<int>& visited) {
 		int ri = root.first;
 		int rdep = root.second;
 		visited[ri] = sampled_size;
-		for (auto child : paths[ri]) {
-			if (visited[child] == -1) {
+		for (auto child : graph.adjlink[ri]) {
+			if (visited[child.v] == -1) {
 				if (rdep < SEARCH_DEPTH)
-					bfs_queue.push(make_pair(child, rdep + 1));
+					bfs_queue.push(make_pair(child.v, rdep + 1));
 			}
 		}
 	}
@@ -247,9 +247,9 @@ void Landmark::bfs_search(int s, vector<vector<int> >& visited) {
 		int ri = root.first;
 		int rdep = root.second;
 		visited[ri].push_back(sampled_size);
-		for (auto child : paths[ri]) {
+		for (auto child : graph.adjlink[ri]) {
 			if (rdep < SEARCH_DEPTH)
-				bfs_queue.push(make_pair(child, rdep + 1));
+				bfs_queue.push(make_pair(child.v, rdep + 1));
 		}
 	}
 
@@ -264,9 +264,9 @@ void Landmark::bfs_cover(int s, vector<int>& depth) {
 		int ri = root.first;
 		int rdep = root.second;
 		depth[ri] = rdep;
-		for (auto child : paths[ri]) {
-			if (depth[child] > rdep + 1) {
-				bfs_queue.push(make_pair(child, rdep + 1));
+		for (auto child : graph.adjlink[ri]) {
+			if (depth[child.v] > rdep + 1) {
+				bfs_queue.push(make_pair(child.v, rdep + 1));
 			}
 		}
 	}

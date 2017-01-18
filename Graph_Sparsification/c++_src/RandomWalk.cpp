@@ -12,29 +12,29 @@ RandomWalk::RandomWalk() {
 	sampled_size = 0;
 }
 
-vector<Edge> RandomWalk::get_sampled_graph(const AdjLinkGraph& paths,
+vector<Edge> RandomWalk::get_sampled_graph(const AdjLinkGraph& graph,
 		int sampled_size, random_walk_type t, double p) {
 	vector<int> nodes;
 	vector<Edge> ret;
 	switch (t) {
 	case RANDOM_WALK_WITH_JUMP:
-		nodes = rwj_sampled_points(paths, sampled_size, p);
+		nodes = rwj_sampled_points(graph, sampled_size, p);
 		break;
 
 	case RANDOM_WALK_WITH_RESTART:
 		break;
 
 	default:
-		nodes = rw_sampled_points(paths, sampled_size);
+		nodes = rw_sampled_points(graph, sampled_size);
 	}
 
-	return graph_from_sampled_points(paths, nodes);
+	return graph_from_sampled_points(graph, nodes);
 }
 
-vector<Edge> RandomWalk::graph_from_sampled_points(const AdjLinkGraph& paths,
+vector<Edge> RandomWalk::graph_from_sampled_points(const AdjLinkGraph& graph,
 		vector<int> &nodes) {
 	vector<Edge> ret;
-	int n = paths.size();
+	int n = graph.get_num_of_nodes();
 	sampled_size = nodes.size();
 	bool has_this_point[n];
 	memset(has_this_point, false, sizeof(has_this_point));
@@ -43,9 +43,9 @@ vector<Edge> RandomWalk::graph_from_sampled_points(const AdjLinkGraph& paths,
 	}
 
 	for (auto p : nodes) {
-		for (auto t : paths[p]) {
-			if (has_this_point[t]) {
-				ret.push_back(Edge(p, t, 1));
+		for (auto t : graph.adjlink[p]) {
+			if (has_this_point[t.v]) {
+				ret.push_back(Edge(p, t.v, t.w));
 			}
 		}
 	}
@@ -54,9 +54,9 @@ vector<Edge> RandomWalk::graph_from_sampled_points(const AdjLinkGraph& paths,
 }
 
 // pure random walk without restart
-vector<int> RandomWalk::rw_sampled_points(const AdjLinkGraph& paths,
+vector<int> RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
 		int sampled_size) {
-	int n = paths.size();
+	int n = graph.get_num_of_nodes();
 	srand(time(NULL));
 	int s = rand() % n;
 	// start from s
@@ -72,18 +72,18 @@ vector<int> RandomWalk::rw_sampled_points(const AdjLinkGraph& paths,
 			ret.push_back(s);
 			visited[s] = true;
 		}
-		int m = paths[s].size();
+		int m = graph.get_num_edge_of_node(s);
 		int next = rand() % m;
-		s = paths[s][next];
+		s = graph.adjlink[s][next].v;
 		iterations++;
 	}
 	return ret;
 }
 
 // random walk without jump
-vector<int> RandomWalk::rwj_sampled_points(const AdjLinkGraph& paths,
+vector<int> RandomWalk::rwj_sampled_points(const AdjLinkGraph& graph,
 		int sampled_size, double jump_prob) {
-	int n = paths.size();
+	int n = graph.get_num_of_nodes();;
 	srand(time(NULL));
 	int s = rand() % n;
 	int iterations = 0;
@@ -101,9 +101,9 @@ vector<int> RandomWalk::rwj_sampled_points(const AdjLinkGraph& paths,
 		double f = (double) rand() / RAND_MAX;
 
 		if (f > jump_prob) {
-			int m = paths[s].size();
+			int m = graph.get_num_edge_of_node(s);
 			int next = rand() % m;
-			s = paths[s][next];
+			s = graph.adjlink[s][next].v;
 		} else { // jump to a random point.
 			int next = rand() % n;
 			s = next;

@@ -16,9 +16,9 @@ RandomNode::~RandomNode() {
 	// TODO Auto-generated destructor stub
 }
 
-EdgeGraph RandomNode::get_sampled_graph(const AdjLinkGraph &paths,
+EdgeGraph RandomNode::get_sampled_graph(const AdjLinkGraph &graph,
 		int sampled_size) {
-	int n = paths.size();
+	int n = graph.get_num_of_nodes();
 
 	int random_array[n];
 	for (int i = 0; i < n; i++) {
@@ -41,9 +41,9 @@ EdgeGraph RandomNode::get_sampled_graph(const AdjLinkGraph &paths,
 	EdgeGraph ret;
 	for (int i = 0; i < n; i++) {
 		if (selected_nodes[i]) {
-			for (auto p : paths[i]) {
-				if(selected_nodes[p] && p > i) {
-					ret.push_back(Edge(i, p, 1));
+			for (auto& p : graph.adjlink[i]) {
+				if(selected_nodes[p.v] && p.v > i) {
+					ret.push_back(Edge(i, p.v, p.w));
 				}
 			}
 		}
