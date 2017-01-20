@@ -38,26 +38,35 @@ void InputGraph::read_in_graph() {
 	string temp;
 	vector<string> t;
 	std::getline(fin, temp);
+	std::getline(fin, temp);
 
 	t = split(temp);
-	if (t.size() == 3) {
+//	for(auto &s : t) {
+//		cout << s << endl;
+//	}
+
+	if (t.size() == 4) {
 		cout << "Input file is weighted." << endl;
 		graph.weighted = true;
 		graph.insert_link(std::stoi(t[0]), std::stoi(t[1]), std::stod(t[2]));
 		graph.insert_link(std::stoi(t[1]), std::stoi(t[0]), std::stod(t[2]));
+		M++;
 		while (fin >> u >> v >> w) {
 			graph.insert_link(u, v, w);
 			graph.insert_link(v, u, w);
+			M++;
 		}
 		graph.init_degree();
-	} else if (t.size() == 2) {
+	} else if (t.size() == 3) {
 		cout << "Input file is unweighted." << endl;
 		graph.weighted = false;
 		graph.insert_link(std::stoi(t[0]), std::stoi(t[1]));
 		graph.insert_link(std::stoi(t[1]), std::stoi(t[0]));
+		M++;
 		while (fin >> u >> v >> w) {
 			graph.insert_link(u, v);
 			graph.insert_link(v, u);
+			M++;
 		}
 		graph.init_degree();
 	} else {

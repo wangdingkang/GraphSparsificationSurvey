@@ -46,7 +46,7 @@ vector<Edge> Landmark::get_sampled_graph_farthest_biased() {
 		}
 	}
 
-	map<pair<int, int>, int> connections;
+	map<pair<int, int>, double> connections;
 	for (int i = 0; i < N; i++) {
 		for (auto t : graph.adjlink[i]) {
 			int fc = visited[i][0];
@@ -56,9 +56,9 @@ vector<Edge> Landmark::get_sampled_graph_farthest_biased() {
 				int mac = max(fc, tc);
 				pair<int, int> tp = make_pair(mic, mac);
 				if (connections.find(tp) != connections.end()) {
-					connections[tp] = connections[tp] + 1;
+					connections[tp] = connections[tp] + t.w;
 				} else {
-					connections.insert(make_pair(tp, 1));
+					connections.insert(make_pair(tp, t.w));
 				}
 			}
 		}
@@ -98,7 +98,7 @@ vector<Edge> Landmark::get_sampled_graph_degree_biased_random_assignment() {
 		}
 	}
 
-	map<pair<int, int>, int> connections;
+	map<pair<int, int>, double> connections;
 	for (int i = 0; i < N; i++) {
 		for (auto t : graph.adjlink[i]) {
 			int fc = visited[i][0];
@@ -108,9 +108,9 @@ vector<Edge> Landmark::get_sampled_graph_degree_biased_random_assignment() {
 				int mac = max(fc, tc);
 				pair<int, int> tp = make_pair(mic, mac);
 				if (connections.find(tp) != connections.end()) {
-					connections[tp] = connections[tp] + 1;
+					connections[tp] = connections[tp] + t.w;
 				} else {
-					connections.insert(make_pair(tp, 1));
+					connections.insert(make_pair(tp, t.w));
 				}
 			}
 		}
@@ -145,7 +145,7 @@ vector<Edge> Landmark::get_sampled_graph_degree_biased() {
 		}
 	}
 
-	map<pair<int, int>, int> connections;
+	map<pair<int, int>, double> connections;
 	for (int i = 0; i < N; i++) {
 		for (auto t : graph.adjlink[i]) {
 			int fc = visited[i];
@@ -155,9 +155,9 @@ vector<Edge> Landmark::get_sampled_graph_degree_biased() {
 				int mac = max(fc, tc);
 				pair<int, int> tp = make_pair(mic, mac);
 				if (connections.find(tp) != connections.end()) {
-					connections[tp] = connections[tp] + 1;
+					connections[tp] = connections[tp] + t.w;
 				} else {
-					connections.insert(make_pair(tp, 1));
+					connections.insert(make_pair(tp, t.w));
 				}
 			}
 		}
@@ -195,7 +195,7 @@ vector<Edge> Landmark::get_sampled_graph_uniform_random_assignment() {
 		}
 	}
 
-	map<pair<int, int>, int> connections;
+	map<pair<int, int>, double> connections;
 	for (int i = 0; i < N; i++) {
 		for (auto t : graph.adjlink[i]) {
 			int fc = visited[i][0];
@@ -205,9 +205,9 @@ vector<Edge> Landmark::get_sampled_graph_uniform_random_assignment() {
 				int mac = max(fc, tc);
 				pair<int, int> tp = make_pair(mic, mac);
 				if (connections.find(tp) != connections.end()) {
-					connections[tp] = connections[tp] + 1;
+					connections[tp] = connections[tp] + t.w;
 				} else {
-					connections.insert(make_pair(tp, 1));
+					connections.insert(make_pair(tp, t.w));
 				}
 			}
 		}
