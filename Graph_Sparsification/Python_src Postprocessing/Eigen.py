@@ -11,7 +11,8 @@ if __name__ == '__main__':
     for filename in onlyfiles:
         G = nx.read_edgelist(filename)
 
-        L = nx.laplacian_matrix(G)
+        # use normalized version instead.
+        L = nx.normalized_laplacian_matrix(G)
 
         vals, vecs = ss.linalg.eigsh(L.asfptype(), k=3, which='BE')
 
