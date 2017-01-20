@@ -57,7 +57,7 @@ int main() {
 	RandomNode* rn = new RandomNode();
 	EdgeGraph o2 = rn->get_sampled_graph(g->get_graph(), SAMPLE_SIZE);
 	cout << "Random Node Sampling sampled " << SAMPLE_SIZE << " nodes." << endl;
-	out->output("output/random_node_" + OUTPUT_FILENAME, o2);
+	out->output_weighted("output/random_node_" + OUTPUT_FILENAME, o2);
 	delete rn;
 
 	cout << "Random node Sampling Finished." << endl;
@@ -66,7 +66,7 @@ int main() {
 	RandomWalk* rw = new RandomWalk();
 	EdgeGraph o3 = rw->get_sampled_graph(g->get_graph(), SAMPLE_SIZE, RANDOM_WALK);
 	cout << "Random Walk Sampling sampled " <<  rw->sampled_size << " nodes." << endl;
-	out->output("output/random_walk_" + OUTPUT_FILENAME, o3);
+	out->output_weighted("output/random_walk_" + OUTPUT_FILENAME, o3);
 	delete rw;
 
 	cout << "RandomWalk Sampling Finished." << endl;
@@ -75,7 +75,7 @@ int main() {
 	Snowball* sb = new Snowball();
 	EdgeGraph o4 = sb->snowball_sampling_with_size(g->get_graph(), SNOWBALL_N, SNOWBALL_K, SAMPLE_SIZE);
 	cout << "Snowball Sampling with size sampled " << sb->sampled_size << " nodes." << endl;
-	out->output("output/snowball_" + OUTPUT_FILENAME, o4);
+	out->output_weighted("output/snowball_" + OUTPUT_FILENAME, o4);
 	delete sb;
 
 	cout << "Snowball Sampling Finished." << endl;
@@ -84,7 +84,7 @@ int main() {
 	ForestFireSampling* ffs = new ForestFireSampling();
 	EdgeGraph o5 = ffs->ffs_sampling_with_size(g->get_graph(), FOREST_FIRE_N, FOREST_FIRE_K, SAMPLE_SIZE);
 	cout << "Forest Fire Sampling with size sampled " << ffs->sampled_size << " nodes." << endl;
-	out->output("output/forest_fire_" + OUTPUT_FILENAME, o5);
+	out->output_weighted("output/forest_fire_" + OUTPUT_FILENAME, o5);
 	delete ffs;
 
 	cout << "Forest Fire Sampling Finished." << endl;
