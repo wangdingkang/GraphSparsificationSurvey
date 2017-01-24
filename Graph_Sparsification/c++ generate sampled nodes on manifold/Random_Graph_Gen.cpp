@@ -16,11 +16,12 @@ using namespace std;
 
 #define THRESHOLD 0.1 // normalized by one.
 
+#define K_NEIGHBOR 5 // number of neighbors
+
 #define OUTPUT string("output/")
 #define POSITIONS string("sphere_node")
 #define GRAPH string("sphere_graph")
 #define SUFFIX string(".txt")
-
 
 struct Edge {
 	int u, v;
@@ -32,8 +33,7 @@ struct Edge {
 		w = _w;
 	}
 };
-
-vector<Edge> edges;
+typedef vector<Edge> Graph;
 
 vector<Node> rand_line(const int n, const Node& a, const Node& b) {
 	vector<Node> nodes(n);
@@ -97,17 +97,64 @@ vector<Node> rand_dumbbell(const int sn, const int ln, const Node& c1,
 	vector<Node> ret;
 	vector<Node> first_ball = rand_sphere(sn, c1, r);
 	vector<Node> second_ball = rand_sphere(sn, c2, r);
+	Node d = c2 - c1;
+	double norm = d.norm2();
+	d = r * d / norm;
+	vector<Node> rod = rand_line(ln, c1 + d, c2 - d);
+	ret.reserve(sn * 2 + ln);
+	ret.insert(ret.end(), first_ball.begin(), first_ball.end());
+	ret.insert(ret.end(), second_ball.begin(), second_ball.end());
+	ret.insert(ret.end(), rod.begin(), rod.end());
 	return ret;
 }
 
-void generate_proximity_by_threshold() {
+Graph generate_proximity_by_threshold(const vector<Node>& nodes) {
+	Graph g;
+	for (int i = 0; i < (int) nodes.size(); i++) {
+		for (int j = i + 1; j < (int) nodes.size(); j++) {
+			double dist = nodes[i].cal_dist(nodes[j]);
+			if (dist < THRESHOLD) {
+				g.push_back(Edge(i, j, 1));
+			}
+		}
+	}
+	return g;
+}
 
+Graph generate_proximity_by_k_nearest(const vector<Node>& nodes) {
+	Graph g;
+	for (int i = 0; i < (int) nodes.size(); i++) {
+
+	}
+	return g;
+}
+
+void output_positions(vector<Node> nodes, string filename) {
+	ofstream fout;
+	fout.open(filename.c_str());
+	for (int i = 0; i < (int) nodes.size(); i++) {
+		fout << i << " " << nodes[i].x << " " << nodes[i].y << " " << nodes[i].z
+				<< endl;
+	}
+	fout.close();
+}
+
+void output_proximity_graph(Graph g, string filename) {
+	ofstream fout;
+	fout.open(filename.c_str());
+	for (int i = 0; i < (int) g.size(); i++) {
+		fout << g[i].u << " " << g[i].v << " " << g[i].w << endl;
+	}
+	fout.close();
 }
 
 int main() {
 
+	// when generating models, you should manually control the diameter of the model to be exactly one;
 	vector<Node> nodes = rand_sphere(N, Node(0, 0, 0), 0.5f);
-
+	Graph g = generate_proximity_by_threshold(nodes);
+	output_positions(nodes, OUTPUT + POSITIONS + SUFFIX);
+	output_proximity_graph(g, OUTPUT + GRAPH + SUFFIX);
 
 	return 0;
 }

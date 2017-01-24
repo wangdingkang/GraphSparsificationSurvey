@@ -11,14 +11,13 @@
 class Node {
 public:
 	double x, y, z;
+	Node();
 	Node(double _x, double _y, double _z);
 	virtual ~Node();
 
 	double cal_dist(const Node& another) const;
 
-//	double norm2() {
-//		return sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
-//	}
+	double norm2() const;
 
 };
 

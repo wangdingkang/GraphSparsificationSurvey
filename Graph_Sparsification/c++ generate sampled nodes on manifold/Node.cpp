@@ -8,6 +8,10 @@
 #include "Node.h"
 #include <bits/stdc++.h>
 
+Node::Node() {
+	x = y = z = 0;
+}
+
 Node::Node(double _x, double _y, double _z) {
 	x = _x;
 	y = _y;
@@ -21,6 +25,10 @@ double Node::cal_dist(const Node& another) const {
 	double dz = z - another.z;
 	temp = dx * dx + dy * dy + dz * dz;
 	return std::sqrt(temp);
+}
+
+double Node::norm2() const{
+	return std::sqrt(x * x + y * y + z * z);
 }
 
 Node::~Node() {
