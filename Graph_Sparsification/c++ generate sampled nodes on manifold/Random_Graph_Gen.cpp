@@ -10,17 +10,17 @@
 #include "Node.h"
 using namespace std;
 
-#define N 100
+#define N 1000
 //#define SIGMA 1	// sigma of gaussian kernel
 #define EPSILON 1e-6
 
 #define THRESHOLD 0.1 // normalized by one.
 
-#define K_NEIGHBOR 5 // number of neighbors
+#define K_NEIGHBOR 3 // number of neighbors
 
 #define OUTPUT string("output/")
-#define POSITIONS string("sphere_node")
-#define GRAPH string("sphere_graph")
+#define POSITIONS string("dumb_node")
+#define GRAPH string("dumb_graph")
 #define SUFFIX string(".txt")
 
 struct Edge {
@@ -139,7 +139,7 @@ Graph generate_proximity_by_k_nearest(const vector<Node>& nodes) {
 			int u = min(i, t.second);
 			int v = max(i, t.second);
 			auto p = make_pair(u, v);
-			if(my_set.find(t) != my_set.end()) {
+			if(my_set.find(t) == my_set.end()) {
 				my_set.insert(p);
 				g.push_back(Edge(u, v, 1.0));
 			}
@@ -171,8 +171,8 @@ void output_proximity_graph(Graph& g, string filename) {
 int main() {
 
 	// when generating models, you should manually control the diameter of the model to be exactly one;
-	vector<Node> nodes = rand_sphere(N, Node(0, 0, 0), 0.5f);
-	Graph g = generate_proximity_by_threshold(nodes);
+	vector<Node> nodes = rand_dumbbell(100, 10, Node(-1.0/3, 0, 0), Node(1.0/3, 0, 0), 1.0/6);
+	Graph g = generate_proximity_by_k_nearest(nodes);
 	output_positions(nodes, OUTPUT + POSITIONS + SUFFIX);
 	output_proximity_graph(g, OUTPUT + GRAPH + SUFFIX);
 
