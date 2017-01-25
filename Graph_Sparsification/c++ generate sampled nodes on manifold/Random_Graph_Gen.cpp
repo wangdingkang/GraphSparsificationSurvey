@@ -123,13 +123,33 @@ Graph generate_proximity_by_threshold(const vector<Node>& nodes) {
 
 Graph generate_proximity_by_k_nearest(const vector<Node>& nodes) {
 	Graph g;
+	set<pair<int, int>> my_set;
 	for (int i = 0; i < (int) nodes.size(); i++) {
-
+		priority_queue<pair<double, int>, std::vector<pair<double, int>>> q_min;
+		for(int j = 0; j<(int) nodes.size(); j++) {
+			if(i != j) {
+				q_min.push(make_pair(nodes[i].cal_dist(nodes[j]), j));
+			}
+			if(q_min.size() > K_NEIGHBOR) {
+				q_min.pop();
+			}
+		}
+		while(!q_min.empty()) {
+			auto t = q_min.top();
+			int u = min(i, t.second);
+			int v = max(i, t.second);
+			auto p = make_pair(u, v);
+			if(my_set.find(t) != my_set.end()) {
+				my_set.insert(p);
+				g.push_back(Edge(u, v, 1.0));
+			}
+			q_min.pop();
+		}
 	}
 	return g;
 }
 
-void output_positions(vector<Node> nodes, string filename) {
+void output_positions(vector<Node>& nodes, string filename) {
 	ofstream fout;
 	fout.open(filename.c_str());
 	for (int i = 0; i < (int) nodes.size(); i++) {
@@ -139,7 +159,7 @@ void output_positions(vector<Node> nodes, string filename) {
 	fout.close();
 }
 
-void output_proximity_graph(Graph g, string filename) {
+void output_proximity_graph(Graph& g, string filename) {
 	ofstream fout;
 	fout.open(filename.c_str());
 	for (int i = 0; i < (int) g.size(); i++) {
