@@ -8,11 +8,15 @@
 #ifndef NODE_H_
 #define NODE_H_
 
+#include <bits/stdc++.h>
+using namespace std;
+
 class Node {
 public:
 	double x, y, z;
+	string label;
 	Node();
-	Node(double _x, double _y, double _z);
+	Node(double _x, double _y, double _z, string _label="null");
 	virtual ~Node();
 
 	double cal_dist(const Node& another) const;

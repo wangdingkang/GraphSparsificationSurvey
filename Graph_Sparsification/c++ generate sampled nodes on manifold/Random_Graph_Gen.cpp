@@ -18,15 +18,20 @@ using namespace std;
 
 #define K_NEIGHBOR 3 // number of neighbors
 
+#define LABEL_SPHERE "sphere"
+#define LABEL_LINE "line"
+
 #define OUTPUT string("output/")
-#define POSITIONS string("dumb_node")
+#define NODES string("dumb_node")
 #define GRAPH string("dumb_graph")
+#define NODES_GEPHI string("dumb_node_gephi")
+#define GRAPH_GEPHI string("dumb_graph_gephi")
 #define SUFFIX string(".txt")
+#define SUFFIX_GEPHI string(".csv")
 
 struct Edge {
 	int u, v;
 	double w;
-
 	Edge(int _u, int _v, double _w) {
 		u = _u;
 		v = _v;
@@ -43,6 +48,7 @@ vector<Node> rand_line(const int n, const Node& a, const Node& b) {
 	for (int i = 0; i < n; i++) {
 		double temp = 1.0f * rand() / RAND_MAX;
 		nodes[i] = (temp * d + a);
+		nodes[i].label = LABEL_LINE;
 	}
 	return nodes;
 }
@@ -51,8 +57,9 @@ vector<Node> even_line(const int n, const Node& a, const Node& b) {
 	vector<Node> nodes(n);
 
 	Node d = (b - a) / (n + 1);
-	for (int i = 1; i < n; i++) {
+	for (int i = 1; i <= n; i++) {
 		nodes[i - 1] = (a + d * i);
+		nodes[i - 1].label = LABEL_LINE;
 	}
 
 	return nodes;
@@ -78,7 +85,7 @@ vector<Node> rand_sphere(const int n, const Node& c, const double r) {
 		double x = 2 * u * sqrt(1 - ss);
 		double y = 2 * v * sqrt(1 - ss);
 		double z = 1 - 2 * ss;
-		nodes[i] = Node(x * r + c.x, y * r + c.y, z * r + c.z);
+		nodes[i] = Node(x * r + c.x, y * r + c.y, z * r + c.z, LABEL_SPHERE);
 	}
 	return nodes;
 }
@@ -100,7 +107,7 @@ vector<Node> rand_dumbbell(const int sn, const int ln, const Node& c1,
 	Node d = c2 - c1;
 	double norm = d.norm2();
 	d = r * d / norm;
-	vector<Node> rod = rand_line(ln, c1 + d, c2 - d);
+	vector<Node> rod = even_line(ln, c1 + d, c2 - d);
 	ret.reserve(sn * 2 + ln);
 	ret.insert(ret.end(), first_ball.begin(), first_ball.end());
 	ret.insert(ret.end(), second_ball.begin(), second_ball.end());
@@ -123,23 +130,23 @@ Graph generate_proximity_by_threshold(const vector<Node>& nodes) {
 
 Graph generate_proximity_by_k_nearest(const vector<Node>& nodes) {
 	Graph g;
-	set<pair<int, int>> my_set;
+	set<pair<int, int> > my_set;
 	for (int i = 0; i < (int) nodes.size(); i++) {
-		priority_queue<pair<double, int>, std::vector<pair<double, int>>> q_min;
-		for(int j = 0; j<(int) nodes.size(); j++) {
-			if(i != j) {
+		priority_queue<pair<double, int>, std::vector<pair<double, int> > > q_min;
+		for (int j = 0; j < (int) nodes.size(); j++) {
+			if (i != j) {
 				q_min.push(make_pair(nodes[i].cal_dist(nodes[j]), j));
 			}
-			if(q_min.size() > K_NEIGHBOR) {
+			if (q_min.size() > K_NEIGHBOR) {
 				q_min.pop();
 			}
 		}
-		while(!q_min.empty()) {
-			auto t = q_min.top();
+		while (!q_min.empty()) {
+			pair<double, int> t = q_min.top();
 			int u = min(i, t.second);
 			int v = max(i, t.second);
-			auto p = make_pair(u, v);
-			if(my_set.find(t) == my_set.end()) {
+			pair<int, int> p = make_pair(u, v);
+			if (my_set.find(p) == my_set.end()) {
 				my_set.insert(p);
 				g.push_back(Edge(u, v, 1.0));
 			}
@@ -149,12 +156,32 @@ Graph generate_proximity_by_k_nearest(const vector<Node>& nodes) {
 	return g;
 }
 
-void output_positions(vector<Node>& nodes, string filename) {
+void output_nodes(vector<Node>& nodes, string filename) {
 	ofstream fout;
 	fout.open(filename.c_str());
 	for (int i = 0; i < (int) nodes.size(); i++) {
 		fout << i << " " << nodes[i].x << " " << nodes[i].y << " " << nodes[i].z
 				<< endl;
+	}
+	fout.close();
+}
+
+void output_nodes_for_gephi(vector<Node>& nodes, string filename) {
+	ofstream fout;
+	fout.open(filename.c_str());
+	fout << "Id;Label" << endl;
+	for (int i = 0; i < (int) nodes.size(); i++) {
+		fout << i << ";" << "\"" << nodes[i].label << "\"" << endl;
+	}
+	fout.close();
+}
+
+void output_proximity_graph_for_gephi(Graph &g, string filename) {
+	ofstream fout;
+	fout.open(filename.c_str());
+	fout << "Source;Target;Weight;Type" << endl;
+	for (int i = 0; i < (int) g.size(); i++) {
+		fout << g[i].u << ";" << g[i].v << ";" << g[i].w << ";Undirected" << endl;
 	}
 	fout.close();
 }
@@ -171,10 +198,13 @@ void output_proximity_graph(Graph& g, string filename) {
 int main() {
 
 	// when generating models, you should manually control the diameter of the model to be exactly one;
-	vector<Node> nodes = rand_dumbbell(100, 10, Node(-1.0/3, 0, 0), Node(1.0/3, 0, 0), 1.0/6);
+	vector<Node> nodes = rand_dumbbell(100, 10, Node(-1.0 / 3, 0, 0),
+			Node(1.0 / 3, 0, 0), 1.0 / 6);
 	Graph g = generate_proximity_by_k_nearest(nodes);
-	output_positions(nodes, OUTPUT + POSITIONS + SUFFIX);
+	output_nodes_for_gephi(nodes, OUTPUT + NODES_GEPHI + SUFFIX_GEPHI);
+	output_nodes(nodes, OUTPUT + NODES + SUFFIX);
 	output_proximity_graph(g, OUTPUT + GRAPH + SUFFIX);
+	output_proximity_graph_for_gephi(g, OUTPUT + GRAPH_GEPHI + SUFFIX_GEPHI);
 
 	return 0;
 }

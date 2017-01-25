@@ -6,16 +6,17 @@
  */
 
 #include "Node.h"
-#include <bits/stdc++.h>
 
 Node::Node() {
 	x = y = z = 0;
+	label = "";
 }
 
-Node::Node(double _x, double _y, double _z) {
+Node::Node(double _x, double _y, double _z, string _label /*="null"*/) {
 	x = _x;
 	y = _y;
 	z = _z;
+	label = _label;
 }
 
 double Node::cal_dist(const Node& another) const {
