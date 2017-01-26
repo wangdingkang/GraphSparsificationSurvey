@@ -23,6 +23,8 @@ public:
 		cout << N << " nodes, and " << M << " edges." << endl;
 	}
 
+	int num_nodes();
+
 	virtual ~InputGraph();
 
 private:

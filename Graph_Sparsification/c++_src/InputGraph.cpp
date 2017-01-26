@@ -13,6 +13,10 @@ InputGraph::InputGraph(string filename) {
 	read_in_graph();
 }
 
+int InputGraph::num_nodes() {
+	return this->N;
+}
+
 AdjLinkGraph InputGraph::get_graph() {
 	return this->graph;
 }
