@@ -22,9 +22,9 @@ using namespace std;
 #define COLOR_LINE "#ff0000"  // color for line
 
 #define OUTPUT string("output/")
-#define NODES string("dumb_node")
+#define NODES string("node_dumb_graph")
 #define GRAPH string("dumb_graph")
-#define NODES_GEPHI string("dumb_node_gephi")
+#define NODES_GEPHI string("node_dumb_graph_gephi")
 #define GRAPH_GEPHI string("dumb_graph_gephi")
 #define SUFFIX string(".txt")
 #define SUFFIX_GEPHI string(".csv")
@@ -199,7 +199,7 @@ void output_proximity_graph(Graph& g, string filename) {
 int main() {
 
 	// when generating models, you should manually control the diameter of the model to be exactly one;
-	vector<Node> nodes = rand_dumbbell(100, 10, Node(-1.0 / 3, 0, 0),
+	vector<Node> nodes = rand_dumbbell(500, 50, Node(-1.0 / 3, 0, 0),
 			Node(1.0 / 3, 0, 0), 1.0 / 6);
 	Graph g = generate_proximity_by_k_nearest(nodes);
 	output_nodes_for_gephi(nodes, OUTPUT + NODES_GEPHI + SUFFIX_GEPHI);
