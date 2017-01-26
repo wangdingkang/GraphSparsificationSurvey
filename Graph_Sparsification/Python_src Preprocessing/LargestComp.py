@@ -25,7 +25,12 @@ if __name__ == "__main__":
 
             Gc = max(nx.connected_component_subgraphs(G), key=len)
             Go = nx.convert_node_labels_to_integers(Gc)
-            nx.write_weighted_edgelist(Go, "processed/LCC_" + filename)
+            outgraph_path = "processed/LCC_" + filename
+            with open(outgraph_path, 'w+') as file:
+                file.write(str(nx.number_of_nodes(Go)) + '\n');
+                for edge in Go.edges(data=True):
+                    file.write(str(edge[0]) + " " + str(edge[1]) + " " + str(edge[2]['weight']) + '\n');
+            # nx.write_weighted_edgelist(Go, "processed/LCC_" + filename)
             opos_path = node_output_folder + filename
             with open(opos_path, 'w+') as file:
                 for node in Go.nodes(data=True):
@@ -35,4 +40,8 @@ if __name__ == "__main__":
         else:
             Gc = max(nx.connected_component_subgraphs(G), key=len)
             Go = nx.convert_node_labels_to_integers(Gc)
-            nx.write_weighted_edgelist(Go, "processed/LCC_" + filename)
+            outgraph_path = "processed/LCC_" + filename
+            with open(outgraph_path, 'w+') as file:
+                file.write(str(nx.number_of_nodes(Go)) + '\n');
+                for edge in Go.edges(data=True):
+                    file.write(str(edge[0]) + " " + str(edge[1]) + ' 1\n');
