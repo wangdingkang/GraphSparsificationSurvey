@@ -9,14 +9,14 @@
 
 Node::Node() {
 	x = y = z = 0;
-	label = "";
+	color = "";
 }
 
-Node::Node(double _x, double _y, double _z, string _label /*="null"*/) {
+Node::Node(double _x, double _y, double _z, string _color /*="null"*/) {
 	x = _x;
 	y = _y;
 	z = _z;
-	label = _label;
+	color = _color;
 }
 
 double Node::cal_dist(const Node& another) const {

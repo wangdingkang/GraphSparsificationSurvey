@@ -18,8 +18,8 @@ using namespace std;
 
 #define K_NEIGHBOR 3 // number of neighbors
 
-#define LABEL_SPHERE "sphere"
-#define LABEL_LINE "line"
+#define COLOR_SPHERE "#00ff00" // color for ball
+#define COLOR_LINE "#ff0000"  // color for line
 
 #define OUTPUT string("output/")
 #define NODES string("dumb_node")
@@ -48,7 +48,7 @@ vector<Node> rand_line(const int n, const Node& a, const Node& b) {
 	for (int i = 0; i < n; i++) {
 		double temp = 1.0f * rand() / RAND_MAX;
 		nodes[i] = (temp * d + a);
-		nodes[i].label = LABEL_LINE;
+		nodes[i].color = COLOR_LINE;
 	}
 	return nodes;
 }
@@ -59,7 +59,7 @@ vector<Node> even_line(const int n, const Node& a, const Node& b) {
 	Node d = (b - a) / (n + 1);
 	for (int i = 1; i <= n; i++) {
 		nodes[i - 1] = (a + d * i);
-		nodes[i - 1].label = LABEL_LINE;
+		nodes[i - 1].color = COLOR_LINE;
 	}
 
 	return nodes;
@@ -85,7 +85,7 @@ vector<Node> rand_sphere(const int n, const Node& c, const double r) {
 		double x = 2 * u * sqrt(1 - ss);
 		double y = 2 * v * sqrt(1 - ss);
 		double z = 1 - 2 * ss;
-		nodes[i] = Node(x * r + c.x, y * r + c.y, z * r + c.z, LABEL_SPHERE);
+		nodes[i] = Node(x * r + c.x, y * r + c.y, z * r + c.z, COLOR_SPHERE);
 	}
 	return nodes;
 }
@@ -169,9 +169,9 @@ void output_nodes(vector<Node>& nodes, string filename) {
 void output_nodes_for_gephi(vector<Node>& nodes, string filename) {
 	ofstream fout;
 	fout.open(filename.c_str());
-	fout << "Id;Label" << endl;
+	fout << "Id;Color" << endl;
 	for (int i = 0; i < (int) nodes.size(); i++) {
-		fout << i << ";" << "\"" << nodes[i].label << "\"" << endl;
+		fout << i << ";" << nodes[i].color << endl;
 	}
 	fout.close();
 }
@@ -181,7 +181,8 @@ void output_proximity_graph_for_gephi(Graph &g, string filename) {
 	fout.open(filename.c_str());
 	fout << "Source;Target;Weight;Type" << endl;
 	for (int i = 0; i < (int) g.size(); i++) {
-		fout << g[i].u << ";" << g[i].v << ";" << g[i].w << ";Undirected" << endl;
+		fout << g[i].u << ";" << g[i].v << ";" << g[i].w << ";Undirected"
+				<< endl;
 	}
 	fout.close();
 }

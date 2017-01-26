@@ -14,9 +14,9 @@ using namespace std;
 class Node {
 public:
 	double x, y, z;
-	string label;
+	string color;
 	Node();
-	Node(double _x, double _y, double _z, string _label="null");
+	Node(double _x, double _y, double _z, string _color="null");
 	virtual ~Node();
 
 	double cal_dist(const Node& another) const;
