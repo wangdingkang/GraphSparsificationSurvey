@@ -144,7 +144,7 @@ int main() {
 		out->output_weighted("output/forest_fire_" + filename, o5);
 		delete ffs;
 
-		cout << "Forest Fire Sampling Finished." << endl;
+		cout << "Forest Fire Sampling Finished." << endl << endl;
 
 		delete out;
 		delete g;

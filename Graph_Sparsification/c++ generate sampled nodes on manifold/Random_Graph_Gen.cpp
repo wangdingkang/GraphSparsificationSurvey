@@ -18,7 +18,7 @@ using namespace std;
 
 #define K_NEIGHBOR 3 // number of neighbors
 
-#define COLOR_SPHERE "#00ff00" // color for ball
+#define COLOR_SPHERE "#0000ff" // color for ball
 #define COLOR_LINE "#ff0000"  // color for line
 
 #define OUTPUT string("output/")

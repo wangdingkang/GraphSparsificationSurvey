@@ -11,7 +11,7 @@ if __name__ == '__main__':
     for filename in onlyfiles:
         print(filename)
 
-        G = nx.read_edgelist(filename)
+        G = nx.read_edgelist(filename, data=(('weight',float),))
 
         # ans = nx.average_shortest_path_length(G)
 
