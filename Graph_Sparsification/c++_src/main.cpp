@@ -11,7 +11,7 @@
 
 #define LANDMARK_DEPTH 2	// Each selected landmark will 'govern' all nodes in 2 HOPs
 
-#define SAMPLE_RATE 0.2	// how much fraction to be sampled
+#define SAMPLE_RATE 0.15	// how much fraction to be sampled
 
 #define SNOWBALL_N 10	// The size of starting set
 #define SNOWBALL_K 5	// each time pick random K neighbors of each nodes in previous set.
@@ -58,42 +58,42 @@ int main() {
 				<< endl;
 		Landmark* l = new Landmark(LANDMARK_DEPTH, g->get_graph());
 		EdgeGraph o1;
-		// based on the degree, selected the nodes with largest degree first.
-		o1 = l->get_sampled_graph_degree_biased();
-		cout << "Landmark Sampling basic degree biased sampled "
-				<< l->sampled_size << " nodes." << endl;
-		out->output_weighted(
-				"output/landmark_degree_biased_"
-						+ string(
-								"depth_") + to_string(LANDMARK_DEPTH) + "_" + filename,
-				o1);
+//		// based on the degree, selected the nodes with largest degree first.
+//		o1 = l->get_sampled_graph_degree_biased();
+//		cout << "Landmark Sampling basic degree biased sampled "
+//				<< l->sampled_size << " nodes." << endl;
+//		out->output_weighted(
+//				"output/landmark_degree_biased_"
+//						+ string(
+//								"depth_") + to_string(LANDMARK_DEPTH) + "_" + filename,
+//				o1);
 
-		// same as the above one, but assign node to a random landmark if it can be reached by multiple landmarks.
-		o1 = l->get_sampled_graph_degree_biased_random_assignment();
-		cout << "Landmark Sampling degree biased with random assignment "
-				<< l->sampled_size << " nodes." << endl;
-		out->output_weighted(
-				"output/landmark_degree_biased_random_assignment_"
-						+ string(
-								"depth_") + to_string(LANDMARK_DEPTH) + "_" + filename,
-				o1);
-
-		// uniform sample with random assignment.
-		o1 = l->get_sampled_graph_uniform_random_assignment();
-		cout << "Landmark Sampling random sampling with random assignment "
-				<< l->sampled_size << " nodes." << endl;
-		out->output_weighted(
-				"output/landmark_uniform_random_assignment_"
-						+ string(
-								"depth_") + to_string(LANDMARK_DEPTH) + "_" + filename,
-				o1);
+//		// same as the above one, but assign node to a random landmark if it can be reached by multiple landmarks.
+//		o1 = l->get_sampled_graph_degree_biased_random_assignment();
+//		cout << "Landmark Sampling degree biased with random assignment "
+//				<< l->sampled_size << " nodes." << endl;
+//		out->output_weighted(
+//				"output/landmark_degree_biased_random_assignment_"
+//						+ string(
+//								"depth_") + to_string(LANDMARK_DEPTH) + "_" + filename,
+//				o1);
+//
+//		// uniform sample with random assignment.
+//		o1 = l->get_sampled_graph_uniform_random_assignment();
+//		cout << "Landmark Sampling random sampling with random assignment "
+//				<< l->sampled_size << " nodes." << endl;
+//		out->output_weighted(
+//				"output/landmark_uniform_random_assignment_"
+//						+ string(
+//								"depth_") + to_string(LANDMARK_DEPTH) + "_" + filename,
+//				o1);
 
 		// farthest sample
 		o1 = l->get_sampled_graph_farthest_biased();
 		cout << "Landmark Sampling farthest sampling with random assignment "
 				<< l->sampled_size << " nodes." << endl;
 		out->output_weighted(
-				"output/landmark_farthest_sampling_random_assignment_"
+				"output/landmark_farthest_sampling_"
 						+ string(
 								"depth_") + to_string(LANDMARK_DEPTH) + "_" + filename,
 				o1);
@@ -132,17 +132,17 @@ int main() {
 		out->output_weighted("output/snowball_" + filename, o4);
 		delete sb;
 
-		cout << "Snowball Sampling Finished." << endl;
-
-		// Forest Fire Sampling
-		ForestFireSampling* ffs = new ForestFireSampling();
-		EdgeGraph o5 = ffs->ffs_sampling_with_size(g->get_graph(),
-				FOREST_FIRE_N,
-				FOREST_FIRE_K, SAMPLE_SIZE);
-		cout << "Forest Fire Sampling with size sampled " << ffs->sampled_size
-				<< " nodes." << endl;
-		out->output_weighted("output/forest_fire_" + filename, o5);
-		delete ffs;
+//		cout << "Snowball Sampling Finished." << endl;
+//
+//		// Forest Fire Sampling
+//		ForestFireSampling* ffs = new ForestFireSampling();
+//		EdgeGraph o5 = ffs->ffs_sampling_with_size(g->get_graph(),
+//				FOREST_FIRE_N,
+//				FOREST_FIRE_K, SAMPLE_SIZE);
+//		cout << "Forest Fire Sampling with size sampled " << ffs->sampled_size
+//				<< " nodes." << endl;
+//		out->output_weighted("output/forest_fire_" + filename, o5);
+//		delete ffs;
 
 		cout << "Forest Fire Sampling Finished." << endl << endl;
 

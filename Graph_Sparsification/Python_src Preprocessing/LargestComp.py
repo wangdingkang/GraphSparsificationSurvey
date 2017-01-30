@@ -3,7 +3,7 @@ from os import listdir
 from os.path import isfile, join
 
 input_folder = "origin/"
-node_folder = "origin_position/node_"
+node_folder = "origin_position/nodes_"
 node_output_folder = "processed_position/node_LCC_"
 
 if __name__ == "__main__":

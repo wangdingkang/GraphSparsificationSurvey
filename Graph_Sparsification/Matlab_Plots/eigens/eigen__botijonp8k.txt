@@ -1,0 +1,5 @@
+-0.000000 0.002536 1.798791 1.808272 1.811962 landmark_farthest_sampling_random_assignment_depth_2_LCC_botijonp8k.txt
+0.000000 0.000325 1.929828 1.931055 1.933997 LCC_botijonp8k.txt
+-0.000000 -0.000000 2.000000 2.000000 2.000000 random_node_LCC_botijonp8k.txt
+0.000000 0.000194 1.956335 1.956753 1.974253 random_walk_LCC_botijonp8k.txt
+-0.000000 -0.000000 1.945475 1.950990 1.959065 snowball_LCC_botijonp8k.txt

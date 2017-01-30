@@ -241,14 +241,17 @@ void Landmark::bfs_search(int s, vector<int>& visited) {
 void Landmark::bfs_search(int s, vector<vector<int> >& visited) {
 	queue<PII> bfs_queue;
 	bfs_queue.push(make_pair(s, 0));
+	bool temp_visited[N];
+	memset(temp_visited, false, sizeof(temp_visited));
 	while (!bfs_queue.empty()) {
 		PII root = bfs_queue.front();
 		bfs_queue.pop();
 		int ri = root.first;
 		int rdep = root.second;
+		temp_visited[ri] = true;
 		visited[ri].push_back(sampled_size);
 		for (auto child : graph.adjlink[ri]) {
-			if (rdep < SEARCH_DEPTH)
+			if (!temp_visited[child.v] && rdep < SEARCH_DEPTH)
 				bfs_queue.push(make_pair(child.v, rdep + 1));
 		}
 	}
@@ -256,17 +259,17 @@ void Landmark::bfs_search(int s, vector<vector<int> >& visited) {
 }
 
 void Landmark::bfs_cover(int s, vector<int>& depth) {
-	queue<PII> bfs_queue;
-	bfs_queue.push(make_pair(s, 0));
+	queue<int> bfs_queue;
+	bfs_queue.push(s);
+	depth[s] = 0;
 	while (!bfs_queue.empty()) {
-		PII root = bfs_queue.front();
+		int root = bfs_queue.front();
+		int d = depth[root] + 1;
 		bfs_queue.pop();
-		int ri = root.first;
-		int rdep = root.second;
-		depth[ri] = rdep;
-		for (auto child : graph.adjlink[ri]) {
-			if (depth[child.v] > rdep + 1) {
-				bfs_queue.push(make_pair(child.v, rdep + 1));
+		for (auto child : graph.adjlink[root]) {
+			if (depth[child.v] > d) {
+				depth[child.v] = d;
+				bfs_queue.push(child.v);
 			}
 		}
 	}
