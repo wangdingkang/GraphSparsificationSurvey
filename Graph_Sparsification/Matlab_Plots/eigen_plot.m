@@ -28,7 +28,7 @@ for i = 1 : length(files)
     set(l, 'Location', 'northwest');
     print(hFig, regexprep(strcat('eigen_', filename), '.txt', ''), '-dpng');
     hold off;
-    %close(hFig);
+    close(hFig);
     
 end
 

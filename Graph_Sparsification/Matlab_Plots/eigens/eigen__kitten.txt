@@ -1,0 +1,5 @@
+0.000000 0.001892 1.798276 1.804413 1.807628 landmark_farthest_sampling_random_assignment_depth_2_LCC_kitten.txt
+0.000000 0.000237 1.902333 1.911894 1.933135 LCC_kitten.txt
+-0.000000 -0.000000 2.000000 2.000000 2.000000 random_node_LCC_kitten.txt
+-0.000000 0.000188 1.948408 1.955860 1.962803 random_walk_LCC_kitten.txt
+-0.000000 0.000000 1.946416 1.954590 1.959992 snowball_LCC_kitten.txt

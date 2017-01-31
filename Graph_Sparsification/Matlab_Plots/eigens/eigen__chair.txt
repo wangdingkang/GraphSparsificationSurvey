@@ -1,0 +1,5 @@
+0.000000 0.002063 1.828992 1.853873 1.860891 landmark_farthest_sampling_random_assignment_depth_2_LCC_chair.txt
+0.000000 0.000249 1.906991 1.915970 1.917711 LCC_chair.txt
+-0.000000 -0.000000 2.000000 2.000000 2.000000 random_node_LCC_chair.txt
+-0.000000 0.000278 1.943507 1.945103 1.970326 random_walk_LCC_chair.txt
+-0.000000 0.000000 1.938440 1.941741 1.957955 snowball_LCC_chair.txt
