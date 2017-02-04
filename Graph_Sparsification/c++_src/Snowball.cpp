@@ -65,13 +65,14 @@ EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& graph,
 	unordered_set<int> v_selected(v_prev);
 	while((int)v_selected.size() < arg_SN) {
 		unordered_set<int> v_i;
-
+		// work as a buffer
+		EdgeGraph temp;
 		for (const auto& vertex : v_prev) {
 			const auto& edge_indices = random_ints(graph.get_num_edge_of_node(vertex), arg_K);
 			for (const auto& idx : edge_indices) {
 				const auto& neighbor = graph.get_neighbor_of_node(vertex, idx);
 				v_i.insert(neighbor);
-				g_sample.push_back(Edge(vertex, neighbor, 1));
+				temp.push_back(Edge(vertex, neighbor, 1));
 			}
 		}
 		v_prev.clear();
@@ -79,6 +80,13 @@ EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& graph,
 			if (!v_selected.count(v)) {
 				v_prev.insert(v);
 				v_selected.insert(v);
+			}
+			if((int)v_selected.size() >= arg_SN)
+				break;
+		}
+		for (auto& edge : temp) {
+			if(v_selected.count(edge.u) && v_selected.count(edge.v)) {
+				g_sample.push_back(Edge(edge.u, edge.v, edge.w));
 			}
 		}
 	}

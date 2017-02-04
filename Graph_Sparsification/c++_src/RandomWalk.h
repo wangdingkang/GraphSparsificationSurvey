@@ -30,7 +30,7 @@ public:
 
 private:
 
-	vector<int> rw_sampled_points(const AdjLinkGraph& graph, int sampled_size);
+	EdgeGraph rw_sampled_points(const AdjLinkGraph& graph, int sampled_size);
 
 	// random walk with jump.
 	vector<int> rwj_sampled_points(const AdjLinkGraph& graph, int sampled_size, double jump_prob );

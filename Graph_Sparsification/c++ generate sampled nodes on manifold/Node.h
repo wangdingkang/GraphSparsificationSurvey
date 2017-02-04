@@ -16,7 +16,7 @@ public:
 	double x, y, z;
 	string color;
 	Node();
-	Node(double _x, double _y, double _z, string _color="null");
+	Node(double _x, double _y, double _z, string _color="#000000");
 	virtual ~Node();
 
 	double cal_dist(const Node& another) const;

@@ -16,21 +16,24 @@ vector<Edge> RandomWalk::get_sampled_graph(const AdjLinkGraph& graph,
 		int sampled_size, random_walk_type t, double p) {
 	vector<int> nodes;
 	vector<Edge> ret;
-	switch (t) {
-	case RANDOM_WALK_WITH_JUMP:
-		nodes = rwj_sampled_points(graph, sampled_size, p);
-		break;
+//	switch (t) {
+//	case RANDOM_WALK_WITH_JUMP:
+//		nodes = rwj_sampled_points(graph, sampled_size, p);
+//		break;
+//
+//	case RANDOM_WALK_WITH_RESTART:
+//		break;
+//
+//	default:
+	ret = rw_sampled_points(graph, sampled_size);
+//	}
 
-	case RANDOM_WALK_WITH_RESTART:
-		break;
-
-	default:
-		nodes = rw_sampled_points(graph, sampled_size);
-	}
-
-	return graph_from_sampled_points(graph, nodes);
+	return ret;
 }
 
+/*
+ * Do not use this. In rw, it's common to only include the traversed edges, not all edges that have both end points included.
+ */
 vector<Edge> RandomWalk::graph_from_sampled_points(const AdjLinkGraph& graph,
 		vector<int> &nodes) {
 	vector<Edge> ret;
@@ -54,7 +57,7 @@ vector<Edge> RandomWalk::graph_from_sampled_points(const AdjLinkGraph& graph,
 }
 
 // pure random walk without restart
-vector<int> RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
+EdgeGraph RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
 		int sampled_size) {
 	int n = graph.get_num_of_nodes();
 	srand(time(NULL));
@@ -62,28 +65,40 @@ vector<int> RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
 	// start from s
 
 	int iterations = 0;
-	vector<int> ret;
+	int cnt_nodes = 0;
 	bool visited[n];
 	memset(visited, false, sizeof(visited));
+	EdgeGraph ret;
+	set<pair<int, int>> my_set;
 
 	// if walk too long, and still get too few points, just return the sampled points.
-	while ((int) ret.size() < sampled_size && iterations < 5 * sampled_size) {
+	while (cnt_nodes < sampled_size && iterations < 5 * sampled_size) {
 		if (!visited[s]) {
-			ret.push_back(s);
+			cnt_nodes++;
 			visited[s] = true;
 		}
 		int m = graph.get_num_edge_of_node(s);
 		int next = rand() % m;
-		s = graph.adjlink[s][next].v;
+		int t = graph.adjlink[s][next].v;
+		int min_n = min(s, t);
+		int max_n = max(s, t);
+		if (!my_set.count(make_pair(min_n, max_n))) {
+			my_set.insert(make_pair(min_n, max_n));
+			ret.push_back(Edge(s, t, 1.0));
+		}
+		s = t;
 		iterations++;
 	}
+
+	this->sampled_size = cnt_nodes;
 	return ret;
 }
 
 // random walk without jump
 vector<int> RandomWalk::rwj_sampled_points(const AdjLinkGraph& graph,
 		int sampled_size, double jump_prob) {
-	int n = graph.get_num_of_nodes();;
+	int n = graph.get_num_of_nodes();
+	;
 	srand(time(NULL));
 	int s = rand() % n;
 	int iterations = 0;
