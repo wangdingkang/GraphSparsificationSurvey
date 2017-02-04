@@ -16,7 +16,7 @@ for i = 1 : length(files)
         s = size(C, 2);
         str = C(1, s);
         str = str{1, 1};
-        scatter(1:1:(s-1), str2double(C(1, 1:(s-1))), 250, 'filled', 'DisplayName', str);
+        plot(1:1:(s-1), str2double(C(1, 1:(s-1))), 'o-', 'DisplayName', str);
         
         tline = fgetl(fid);
     end
@@ -25,8 +25,9 @@ for i = 1 : length(files)
     l = legend('show');
     t = title({filename; ' '});
     set(l, 'Interpreter', 'none');
+    set(t, 'Interpreter', 'none');
     set(l, 'Location', 'northwest');
-    print(hFig, regexprep(strcat('eigen_', filename), '.txt', ''), '-dpng');
+    print(hFig, regexprep(filename , '.txt', ''), '-dpng');
     hold off;
     close(hFig);
     

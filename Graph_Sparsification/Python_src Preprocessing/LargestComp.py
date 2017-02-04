@@ -1,6 +1,7 @@
 import networkx as nx
 from os import listdir
 from os.path import isfile, join
+import scipy.sparse as ss
 
 input_folder = "origin/"
 node_folder = "origin_position/nodes_"
@@ -23,7 +24,10 @@ if __name__ == "__main__":
                     # print(content, tpos)
                     G.add_node((content[0]), pos=tpos)
 
+            L = nx.normalized_laplacian_matrix(G)
+
             Gc = max(nx.connected_component_subgraphs(G), key=len)
+
             Go = nx.convert_node_labels_to_integers(Gc)
             outgraph_path = "processed/LCC_" + filename
             with open(outgraph_path, 'w+') as file:

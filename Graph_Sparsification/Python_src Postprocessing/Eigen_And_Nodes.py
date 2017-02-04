@@ -5,7 +5,7 @@ from os.path import isfile, join
 
 input_folder = "processed/"
 output_node = "sampled_nodes/node_"
-output_eigen = "eigen/"
+output_eigen = "results/"
 
 if __name__ == '__main__':
     onlyfiles = [f for f in listdir(input_folder) if isfile(join(input_folder, f))]
@@ -20,10 +20,10 @@ if __name__ == '__main__':
         # use normalized version instead.
         L = nx.normalized_laplacian_matrix(G)
 
-        vals, vecs = ss.linalg.eigsh(L.asfptype(), k=5, which='BE')
+        vals, vecs = ss.linalg.eigsh(L.asfptype(), k=10, which='SM')
 
         name = filename[filename.rfind('_'):]
-        with open(output_eigen + "eigen_" + name, 'a') as eigen_file:
+        with open(output_eigen + "eigen" + name, 'a') as eigen_file:
             for v in vals:
                 eigen_file.write('{0:.6f}'.format(v) + ' ')
             eigen_file.write(filename + '\n')
