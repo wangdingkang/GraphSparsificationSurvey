@@ -9,7 +9,7 @@
 
 #define INPUT_FOLDER "input/"
 
-#define LANDMARK_DEPTH 1	// Each selected landmark will 'govern' all nodes in 2 HOPs
+//#define LANDMARK_DEPTH 1	// Each selected landmark will 'govern' all nodes in 2 HOPs
 
 #define SAMPLE_RATE 0.075	// how much fraction to be sampled
 
@@ -54,9 +54,9 @@ int main() {
 		g->show();
 
 		// Landmark Sampling
-		cout << "Landmark Sampling with depth = " << LANDMARK_DEPTH << "."
+		cout << "Landmark Sampling."
 				<< endl;
-		Landmark* l = new Landmark(LANDMARK_DEPTH, g->get_graph());
+		Landmark* l = new Landmark(g->get_graph());
 		EdgeGraph o1;
 //		// based on the degree, selected the nodes with largest degree first.
 //		o1 = l->get_sampled_graph_degree_biased();

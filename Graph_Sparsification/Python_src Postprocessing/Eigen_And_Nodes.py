@@ -28,13 +28,13 @@ if __name__ == '__main__':
         cnt_node = nx.number_of_nodes(G)
         L = nx.laplacian_matrix(G)
 
-        vals, vecs = ss.linalg.eigsh(L.asfptype(), k=10, which='SM', maxiter=5000)
+        vals, vecs = ss.linalg.eigsh(L.asfptype(), k=6, which='LM', sigma=0, maxiter=2000)
 
         name = filename[filename.rfind('_'):]
         with open(output_eigen + "eigen" + name, 'a') as eigen_file:
             for v in vals:
                 # if you use normalized one, comment the division of '/cnt_node'
-                eigen_file.write('{0:.6f}'.format(v / cnt_node) + ' ')
+                eigen_file.write('{0:.8f}'.format(v / cnt_node) + ' ')
             eigen_file.write(filename + '\n')
 
 

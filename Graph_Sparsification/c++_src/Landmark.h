@@ -12,9 +12,10 @@
 
 class Landmark {
 public:
-	Landmark(int depth, const AdjLinkGraph &graph);
+//	Landmark(int depth, const AdjLinkGraph &graph);
+	Landmark(const AdjLinkGraph &graph);
 
-	int SEARCH_DEPTH;
+//	int SEARCH_DEPTH;
 	int sampled_size;
 	int N;
 

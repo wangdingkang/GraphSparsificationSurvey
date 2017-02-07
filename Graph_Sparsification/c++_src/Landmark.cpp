@@ -7,14 +7,21 @@
 
 #include "Landmark.h"
 
-Landmark::Landmark(int _depth, const AdjLinkGraph& _graph) {
-	this->SEARCH_DEPTH = _depth;
+//Landmark::Landmark(int _depth, const AdjLinkGraph& _graph) {
+//	this->SEARCH_DEPTH = _depth;
+//	this->graph = _graph;
+//	this->sampled_size = 0;
+//	this->N = graph.get_num_of_nodes();
+//}
+
+Landmark::Landmark(const AdjLinkGraph &_graph) {
 	this->graph = _graph;
 	this->sampled_size = 0;
 	this->N = graph.get_num_of_nodes();
 }
 
-vector<Edge> Landmark::farthest_landmark_sampling(int sample_size) {
+
+vector<Edge> Landmark::farthest_landmark_sampling(int S) {
 	sampled_size = 0;
 	vector<Edge> ret;
 
@@ -29,7 +36,8 @@ vector<Edge> Landmark::farthest_landmark_sampling(int sample_size) {
 	vector<int> landmarks;
 
 	// do farthest sampling, each time you sample the node that is farthest from existing set.
-	for (int i = 1; i < sampled_size; i++) {
+//	cerr << "farthest sampling" << endl;
+	for (int i = 0; i < S; i++) {
 
 		assignment[s] = (int) landmarks.size();
 		landmarks.push_back(s);
@@ -55,6 +63,7 @@ vector<Edge> Landmark::farthest_landmark_sampling(int sample_size) {
 	}
 
 	// assign nodes to certain landmark, based on the distance.
+//	cerr << "assignment" << endl;
 	int cnt_landmark = (int) landmarks.size();
 	vector<int> to_be_assign(landmarks);
 	add_set_to_assign(assignment, to_be_assign);
@@ -69,14 +78,18 @@ vector<Edge> Landmark::farthest_landmark_sampling(int sample_size) {
 			int r = rand() % (int) candidates.size();
 			assignment[node] = candidates[r];
 		}
+		add_set_to_assign(assignment, to_be_assign);
 	}
 
+//	cerr << "construction." << endl;
 	// construct the sample graph, i.e., add edges.
 	vector<int> cnt_cluster(cnt_landmark);
+	std::fill(cnt_cluster.begin(), cnt_cluster.end(), 0);
 	map<pair<int, int>, double> connections;
 	for (int i = 0; i < N; i++) {
+		int a = assignment[i];
+		cnt_cluster[a] ++;
 		for (auto& child : graph.adjlink[i]) {
-			int a = assignment[i];
 			int b = assignment[child.v];
 			if (a != b) {
 				pair<int, int> tp = make_pair(min(a, b), max(a, b));
@@ -89,15 +102,16 @@ vector<Edge> Landmark::farthest_landmark_sampling(int sample_size) {
 		}
 	}
 
+//	cerr << "add edges." << endl;
 	// add_edges;
-	for(auto& ele : connections) {
+	for (auto& ele : connections) {
 		int u = ele.first.first;
 		int v = ele.first.second;
 		ret.push_back(
 				Edge(u, v,
 						ele.second / (2.0f * cnt_cluster[u] * cnt_cluster[v])));
 	}
-	sampled_size = (int)landmarks.size();
+	sampled_size = (int) landmarks.size();
 
 	return ret;
 }
