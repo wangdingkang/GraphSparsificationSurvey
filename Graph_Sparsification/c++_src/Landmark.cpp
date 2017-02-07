@@ -97,6 +97,7 @@ vector<Edge> Landmark::farthest_landmark_sampling(int sample_size) {
 				Edge(u, v,
 						ele.second / (2.0f * cnt_cluster[u] * cnt_cluster[v])));
 	}
+	sampled_size = (int)landmarks.size();
 
 	return ret;
 }

@@ -42,7 +42,7 @@ private:
 
 	void update_depth(int s, vector<int>& depth);
 
-	void Landmark::add_set_to_assign(vector<int>& assignment, vector<int>& assign_set);
+	void add_set_to_assign(vector<int>& assignment, vector<int>& assign_set);
 
 //	void bfs_search(int s, vector<int>& visited);
 //
