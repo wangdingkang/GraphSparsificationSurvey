@@ -11,21 +11,30 @@ if __name__ == '__main__':
     onlyfiles = [f for f in listdir(input_folder) if isfile(join(input_folder, f))]
 
     for filename in onlyfiles:
+        print('Handling ' + filename + '...')
+
         G = nx.read_edgelist(join(input_folder, filename), data=(('weight',float),))
+        G = max(nx.connected_component_subgraphs(G), key=len)
+
+        print('Lcc of size ' + str(nx.number_of_nodes(G)))
 
         with open(output_node + filename, 'w+') as node_file:
             for node in G.nodes():
                 node_file.write(node + '\n')
 
         # use normalized version instead.
-        L = nx.normalized_laplacian_matrix(G)
+        # L = nx.normalized_laplacian_matrix(G)
 
-        vals, vecs = ss.linalg.eigsh(L.asfptype(), k=10, which='SM')
+        cnt_node = nx.number_of_nodes(G)
+        L = nx.laplacian_matrix(G)
+
+        vals, vecs = ss.linalg.eigsh(L.asfptype(), k=10, which='SM', maxiter=5000)
 
         name = filename[filename.rfind('_'):]
         with open(output_eigen + "eigen" + name, 'a') as eigen_file:
             for v in vals:
-                eigen_file.write('{0:.6f}'.format(v) + ' ')
+                # if you use normalized one, comment the division of '/cnt_node'
+                eigen_file.write('{0:.6f}'.format(v / cnt_node) + ' ')
             eigen_file.write(filename + '\n')
 
 

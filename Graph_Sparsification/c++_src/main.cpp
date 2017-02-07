@@ -11,12 +11,12 @@
 
 #define LANDMARK_DEPTH 1	// Each selected landmark will 'govern' all nodes in 2 HOPs
 
-#define SAMPLE_RATE 0.15	// how much fraction to be sampled
+#define SAMPLE_RATE 0.075	// how much fraction to be sampled
 
-#define SNOWBALL_N 10	// The size of starting set
+#define SNOWBALL_N 1	// The size of starting set
 #define SNOWBALL_K 5	// each time pick random K neighbors of each nodes in previous set.
 
-#define FOREST_FIRE_N 10	// similar as SNOWBALL_N
+#define FOREST_FIRE_N 1	// similar as SNOWBALL_N
 #define FOREST_FIRE_K 5	// the number of neighbors picked ~ Geo(K).
 
 int SAMPLE_SIZE = 1000; // default to 1000, but reset to SAMPLE_SIZE * the size of original graph.
@@ -89,7 +89,7 @@ int main() {
 //				o1);
 
 		// farthest sample
-		o1 = l->get_sampled_graph_farthest_biased();
+		o1 = l->farthest_landmark_sampling(SAMPLE_SIZE);
 		cout << "Landmark Sampling farthest sampling with random assignment "
 				<< l->sampled_size << " nodes, and " << o1.size() << " edges."
 				<< endl;

@@ -1,7 +1,7 @@
 import networkx as nx
 from os import listdir
 from os.path import isfile, join
-import scipy.sparse as ss
+
 
 input_folder = "origin/"
 node_folder = "origin_position/nodes_"
@@ -11,7 +11,11 @@ if __name__ == "__main__":
 
     onlyfiles = [f for f in listdir(input_folder) if isfile(join(input_folder, f))]
     for filename in onlyfiles:
+        print('Processing ' + filename)
         G = nx.read_edgelist(join(input_folder, filename), data=(('weight',float),))
+
+        print(str(nx.number_of_nodes(G)) + ' nodes, ' + str(nx.number_of_edges(G)) + ' edges in original graph.')
+
         pos_path = node_folder + filename
 
         # means its a 3D model proximity graph, each node has its own coordinates.
@@ -27,7 +31,7 @@ if __name__ == "__main__":
             L = nx.normalized_laplacian_matrix(G)
 
             Gc = max(nx.connected_component_subgraphs(G), key=len)
-
+            print(str(nx.number_of_nodes(Gc)) + ' nodes, ' + str(nx.number_of_edges(Gc)) + ' edges in LCC.')
             Go = nx.convert_node_labels_to_integers(Gc)
             outgraph_path = "processed/LCC_" + filename
             with open(outgraph_path, 'w+') as file:
@@ -43,6 +47,7 @@ if __name__ == "__main__":
         # otherwise, it's just a graph from snap stanford.
         else:
             Gc = max(nx.connected_component_subgraphs(G), key=len)
+            print(str(nx.number_of_nodes(Gc)) + ' nodes, ' + str(nx.number_of_edges(Gc)) + ' edges in LCC.')
             Go = nx.convert_node_labels_to_integers(Gc)
             outgraph_path = "processed/LCC_" + filename
             with open(outgraph_path, 'w+') as file:
