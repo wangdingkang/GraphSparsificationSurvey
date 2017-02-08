@@ -19,7 +19,7 @@
 #define FOREST_FIRE_N 1	// similar as SNOWBALL_N
 #define FOREST_FIRE_K 5	// the number of neighbors picked ~ Geo(K).
 
-int SAMPLE_SIZE = 3000; // default to 1000, but reset to SAMPLE_SIZE * the size of original graph.
+int SAMPLE_SIZE = 1000; // default to 1000, but reset to SAMPLE_SIZE * the size of original graph.
 
 vector<string> fetch_all_input_files(const string input_folder) {
 	struct dirent *entry;
@@ -44,20 +44,20 @@ vector<string> fetch_all_input_files(const string input_folder) {
 int main() {
 
 	vector<string> files = fetch_all_input_files(INPUT_FOLDER);
-	for (string filename : files) {
-		InputGraph* g = new InputGraph(INPUT_FOLDER + filename);
-		OutputGraph* out = new OutputGraph();
+//	for (; SAMPLE_SIZE < 1001; SAMPLE_SIZE += 100) {
+		for (string filename : files) {
+			InputGraph* g = new InputGraph(INPUT_FOLDER + filename);
+			OutputGraph* out = new OutputGraph();
 
-		// SAMPLE_SIZE = SAMPLE_RATE * g->num_nodes();
+			// SAMPLE_SIZE = SAMPLE_RATE * g->num_nodes();
 
-		cout << "File " << filename << " Read." << endl;
-		g->show();
+			cout << "File " << filename << " Read." << endl;
+			g->show();
 
-		// Landmark Sampling
-		cout << "Landmark Sampling."
-				<< endl;
-		Landmark* l = new Landmark(g->get_graph());
-		EdgeGraph o1;
+			// Landmark Sampling
+			cout << "Landmark Sampling." << endl;
+			Landmark* l = new Landmark(g->get_graph());
+			EdgeGraph o1;
 //		// based on the degree, selected the nodes with largest degree first.
 //		o1 = l->get_sampled_graph_degree_biased();
 //		cout << "Landmark Sampling basic degree biased sampled "
@@ -88,51 +88,52 @@ int main() {
 //								"depth_") + to_string(LANDMARK_DEPTH) + "_" + filename,
 //				o1);
 
-		// farthest sample
-		o1 = l->farthest_landmark_sampling(SAMPLE_SIZE);
-		cout << "Landmark Sampling farthest sampling with random assignment "
-				<< l->sampled_size << " nodes, and " << o1.size() << " edges."
-				<< endl;
-		out->output_weighted("output/landmark_farthest_"
+			// farthest sample
+			o1 = l->random_landmark_sampling(SAMPLE_SIZE);
+			cout
+					<< "Landmark Sampling random sampling with random assignment "
+					<< l->sampled_size << " nodes, and " << o1.size()
+					<< " edges." << endl;
+			out->output_weighted("output/landmark_farthest_" + to_string(SAMPLE_SIZE)
 //						+ string(
 //								"depth_") + to_string(LANDMARK_DEPTH) + "_"
-				+ filename, o1);
-		delete l;
+					+ filename, o1);
+			delete l;
 
-		cout << "Landmark Sampling Finished." << endl;
+			cout << "Landmark Sampling Finished." << endl;
 
-		// RandomNode Sampling
-		RandomNode* rn = new RandomNode();
-		EdgeGraph o2 = rn->get_sampled_graph(g->get_graph(), SAMPLE_SIZE);
-		cout << "Random Node Sampling sampled " << SAMPLE_SIZE << " nodes, and "
-				<< o2.size() << " edges." << endl;
-		out->output_weighted("output/random_node_" + filename, o2);
-		delete rn;
-
-		cout << "Random node Sampling Finished." << endl;
-
-		// RandomWalk Sampling
-		RandomWalk* rw = new RandomWalk();
-		EdgeGraph o3 = rw->get_sampled_graph(g->get_graph(), SAMPLE_SIZE,
-				RANDOM_WALK);
-		cout << "Random Walk Sampling sampled " << rw->sampled_size
-				<< " nodes, and " << o3.size() << " edges." << endl;
-		out->output_weighted("output/random_walk_" + filename, o3);
-		delete rw;
-
-		cout << "RandomWalk Sampling Finished." << endl;
-
-		// Snowball Sampling
-		Snowball* sb = new Snowball();
-		EdgeGraph o4 = sb->snowball_sampling_with_size(g->get_graph(),
-		SNOWBALL_N,
-		SNOWBALL_K, SAMPLE_SIZE);
-		cout << "Snowball Sampling with size sampled " << sb->sampled_size
-				<< " nodes, and " << o4.size() << " edges." << endl;
-		out->output_weighted("output/snowball_" + filename, o4);
-		delete sb;
-
-		cout << "Snowball Sampling Finished." << endl;
+//		// RandomNode Sampling
+//		RandomNode* rn = new RandomNode();
+//		EdgeGraph o2 = rn->get_sampled_graph(g->get_graph(), SAMPLE_SIZE);
+//		cout << "Random Node Sampling sampled " << SAMPLE_SIZE << " nodes, and "
+//				<< o2.size() << " edges." << endl;
+//		out->output_weighted("output/random_node_" + filename, o2);
+//		delete rn;
+//
+//		cout << "Random node Sampling Finished." << endl;
+//
+//		// RandomWalk Sampling
+//		RandomWalk* rw = new RandomWalk();
+//		EdgeGraph o3 = rw->get_sampled_graph(g->get_graph(), SAMPLE_SIZE,
+//				RANDOM_WALK);
+//		cout << "Random Walk Sampling sampled " << rw->sampled_size
+//				<< " nodes, and " << o3.size() << " edges." << endl;
+//		out->output_weighted("output/random_walk_" + filename, o3);
+//		delete rw;
+//
+//		cout << "RandomWalk Sampling Finished." << endl;
+//
+//		// Snowball Sampling
+//		Snowball* sb = new Snowball();
+//		EdgeGraph o4 = sb->snowball_sampling_with_size(g->get_graph(),
+//		SNOWBALL_N,
+//		SNOWBALL_K, SAMPLE_SIZE);
+//		cout << "Snowball Sampling with size sampled " << sb->sampled_size
+//				<< " nodes, and " << o4.size() << " edges." << endl;
+//		out->output_weighted("output/snowball_" + filename, o4);
+//		delete sb;
+//
+//		cout << "Snowball Sampling Finished." << endl;
 //
 //		// Forest Fire Sampling
 //		ForestFireSampling* ffs = new ForestFireSampling();
@@ -146,8 +147,9 @@ int main() {
 
 //		cout << "Forest Fire Sampling Finished." << endl << endl;
 
-		delete out;
-		delete g;
+			delete out;
+			delete g;
+//		}
 	}
 	return 0;
 }

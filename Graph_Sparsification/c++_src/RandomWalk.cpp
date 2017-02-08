@@ -90,6 +90,7 @@ EdgeGraph RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
 		iterations++;
 	}
 
+	if(!visited[s]) ret.pop_back();
 	this->sampled_size = cnt_nodes;
 	return ret;
 }

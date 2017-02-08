@@ -20,6 +20,40 @@ Landmark::Landmark(const AdjLinkGraph &_graph) {
 	this->N = graph.get_num_of_nodes();
 }
 
+vector<Edge> Landmark::random_landmark_sampling(int S) {
+	sampled_size = 0;
+	vector<Edge> ret;
+	srand(time(NULL));
+	vector<int> randoms;
+	for (int i = 0; i < N; i++) {
+		randoms.push_back(i);
+	}
+	random_shuffle(randoms.begin(), randoms.end());
+	vector<int> landmarks(randoms.begin(), randoms.begin() + S);
+	vector<int> depth(N);
+	std::fill(depth.begin(), depth.end(), N);
+	vector<int> assignment(N);
+	std::fill(assignment.begin(), assignment.end(), -1);
+	for (int i = 0; i < S; i++) {
+		assignment[landmarks[i]] = i;
+	}
+
+	int cnt_landmark = landmarks.size();
+	vector<int> cnt_cluster(cnt_landmark);
+	fill(cnt_cluster.begin(), cnt_cluster.end(), 0);
+
+	assign_nodes_to_landmarks(assignment, landmarks);
+
+	construct_graph(assignment, cnt_cluster, ret);
+
+	int cnt_cmax = *max_element(cnt_cluster.begin(), cnt_cluster.end());
+	int cnt_cmin = *min_element(cnt_cluster.begin(), cnt_cluster.end());
+	cout << "max_cluster has " << cnt_cmax << " nodes, and min_cluster has "
+			<< cnt_cmin << " nodes." << endl;
+
+	sampled_size = (int) landmarks.size();
+	return ret;
+}
 
 vector<Edge> Landmark::farthest_landmark_sampling(int S) {
 	sampled_size = 0;
@@ -62,33 +96,31 @@ vector<Edge> Landmark::farthest_landmark_sampling(int S) {
 
 	}
 
-	// assign nodes to certain landmark, based on the distance.
-//	cerr << "assignment" << endl;
+	assign_nodes_to_landmarks(assignment, landmarks);
 	int cnt_landmark = (int) landmarks.size();
-	vector<int> to_be_assign(landmarks);
-	add_set_to_assign(assignment, to_be_assign);
-	while (!to_be_assign.empty()) {
-		for (auto& node : to_be_assign) {
-			vector<int> candidates;
-			for (auto& child : graph.adjlink[node]) {
-				if (assignment[child.v] >= 0) {
-					candidates.push_back(assignment[child.v]);
-				}
-			}
-			int r = rand() % (int) candidates.size();
-			assignment[node] = candidates[r];
-		}
-		add_set_to_assign(assignment, to_be_assign);
-	}
 
-//	cerr << "construction." << endl;
-	// construct the sample graph, i.e., add edges.
 	vector<int> cnt_cluster(cnt_landmark);
+
+	construct_graph(assignment, cnt_cluster, ret);
+
+	int cnt_cmax = *max_element(cnt_cluster.begin(), cnt_cluster.end());
+	int cnt_cmin = *min_element(cnt_cluster.begin(), cnt_cluster.end());
+	cout << "max_cluster has " << cnt_cmax << " nodes, and min_cluster has "
+			<< cnt_cmin << " nodes." << endl;
+
+	sampled_size = (int) landmarks.size();
+
+	return ret;
+}
+
+void Landmark::construct_graph(vector<int>& assignment,
+		vector<int> &cnt_cluster, vector<Edge>& ret) {
+//	vector<int> cnt_cluster(cnt_landmark);
 	std::fill(cnt_cluster.begin(), cnt_cluster.end(), 0);
 	map<pair<int, int>, double> connections;
 	for (int i = 0; i < N; i++) {
 		int a = assignment[i];
-		cnt_cluster[a] ++;
+		cnt_cluster[a]++;
 		for (auto& child : graph.adjlink[i]) {
 			int b = assignment[child.v];
 			if (a != b) {
@@ -101,9 +133,6 @@ vector<Edge> Landmark::farthest_landmark_sampling(int S) {
 			}
 		}
 	}
-
-//	cerr << "add edges." << endl;
-	// add_edges;
 	for (auto& ele : connections) {
 		int u = ele.first.first;
 		int v = ele.first.second;
@@ -111,41 +140,59 @@ vector<Edge> Landmark::farthest_landmark_sampling(int S) {
 				Edge(u, v,
 						ele.second / (2.0f * cnt_cluster[u] * cnt_cluster[v])));
 	}
-	sampled_size = (int) landmarks.size();
 
-	return ret;
+}
+
+
+void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
+	const vector<int>& landmarks) {
+vector<int> to_be_assign(landmarks);
+add_set_to_assign(assignment, to_be_assign);
+while (!to_be_assign.empty()) {
+	for (auto& node : to_be_assign) {
+		vector<int> candidates;
+		for (auto& child : graph.adjlink[node]) {
+			if (assignment[child.v] >= 0) {
+				candidates.push_back(assignment[child.v]);
+			}
+		}
+		int r = rand() % (int) candidates.size();
+		assignment[node] = candidates[r];
+	}
+	add_set_to_assign(assignment, to_be_assign);
+}
 }
 
 void Landmark::add_set_to_assign(vector<int>& assignment,
-		vector<int>& to_be_assign) {
-	vector<int> temp(to_be_assign);
-	to_be_assign.clear();
-	for (auto& node : temp) {
-		for (auto& child : graph.adjlink[node]) {
-			// if not assigned yet and not added to the to_be_assign set (-2)
-			if (assignment[child.v] == -1) {
-				to_be_assign.push_back(child.v);
-				assignment[child.v] = -2; // already in set, ready to be assigned, avoid duplicate insertion.
-			}
+	vector<int>& to_be_assign) {
+vector<int> temp(to_be_assign);
+to_be_assign.clear();
+for (auto& node : temp) {
+	for (auto& child : graph.adjlink[node]) {
+		// if not assigned yet and not added to the to_be_assign set (-2)
+		if (assignment[child.v] == -1) {
+			to_be_assign.push_back(child.v);
+			assignment[child.v] = -2; // already in set, ready to be assigned, avoid duplicate insertion.
 		}
 	}
 }
+}
 
 void Landmark::update_depth(int s, vector<int>& depth) {
-	queue<PII> bfs_queue;
-	bfs_queue.push(make_pair(s, 0));
-	while (!bfs_queue.empty()) {
-		PII root = bfs_queue.front();
-		bfs_queue.pop();
-		int i = root.first;
-		int d = root.second;
-		depth[i] = d;
-		for (auto &child : graph.adjlink[i]) {
-			if (d + 1 < depth[child.v]) {
-				bfs_queue.push(make_pair(child.v, d + 1));
-			}
+queue<PII> bfs_queue;
+bfs_queue.push(make_pair(s, 0));
+while (!bfs_queue.empty()) {
+	PII root = bfs_queue.front();
+	bfs_queue.pop();
+	int i = root.first;
+	int d = root.second;
+	depth[i] = d;
+	for (auto &child : graph.adjlink[i]) {
+		if (d + 1 < depth[child.v]) {
+			bfs_queue.push(make_pair(child.v, d + 1));
 		}
 	}
+}
 }
 
 //void Landmark::bfs_search(int s, vector<vector<int> >& visited) {
@@ -436,6 +483,6 @@ void Landmark::update_depth(int s, vector<int>& depth) {
 //}
 
 Landmark::~Landmark() {
-	// TODO Auto-generated destructor stub
+// TODO Auto-generated destructor stub
 }
 

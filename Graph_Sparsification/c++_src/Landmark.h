@@ -31,6 +31,8 @@ public:
 
 	vector<Edge> farthest_landmark_sampling(int sample_size);
 
+	vector<Edge> random_landmark_sampling(int sample_size);
+
 	virtual ~Landmark();
 
 private:
@@ -40,6 +42,12 @@ private:
 	 till no point left.
 	 * weight between any two cluster(landmark), it's the number of connections between two landmark.
 	 */
+	void assign_nodes_to_landmarks(vector<int>& assignment,
+			const vector<int>& landmarks);
+
+
+	void construct_graph(vector<int>& assignment, vector<int> &cnt_cluster,
+			vector<Edge>& ret);
 
 	void update_depth(int s, vector<int>& depth);
 
