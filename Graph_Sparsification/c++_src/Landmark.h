@@ -20,6 +20,8 @@ public:
 	int N;
 
 	AdjLinkGraph graph;
+	vector<int> assignment;
+	vector<int> cnt_cluster;
 
 //	vector<Edge> get_sampled_graph_degree_biased();
 //

@@ -32,14 +32,14 @@ vector<Edge> Landmark::random_landmark_sampling(int S) {
 	vector<int> landmarks(randoms.begin(), randoms.begin() + S);
 	vector<int> depth(N);
 	std::fill(depth.begin(), depth.end(), N);
-	vector<int> assignment(N);
+	assignment = vector<int>(N);
 	std::fill(assignment.begin(), assignment.end(), -1);
 	for (int i = 0; i < S; i++) {
 		assignment[landmarks[i]] = i;
 	}
 
 	int cnt_landmark = landmarks.size();
-	vector<int> cnt_cluster(cnt_landmark);
+	cnt_cluster = vector<int>(cnt_landmark);
 	fill(cnt_cluster.begin(), cnt_cluster.end(), 1);
 
 	assign_nodes_to_landmarks(assignment, landmarks, cnt_cluster);
@@ -115,11 +115,11 @@ void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
 			for (auto& child : graph.adjlink[node]) {
 				if (assignment[child.v] >= 0) {
 					int tcnt = cnt_cluster[assignment[child.v]];
-					if(tcnt < max_size) {
+					if (tcnt < max_size) {
 						max_size = tcnt;
 						candidates.clear();
 						candidates.push_back(assignment[child.v]);
-					} else if(tcnt == max_size){
+					} else if (tcnt == max_size) {
 						candidates.push_back(assignment[child.v]);
 					}
 				}

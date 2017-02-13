@@ -58,7 +58,7 @@ struct AdjLinkGraph {
 
 	vector<vector<Edge_Out>> adjlink;
 
-	AdjLinkGraph(){}
+	AdjLinkGraph(){weighted = false;}
 
 	AdjLinkGraph(bool _weighted, int N) {
 		weighted = _weighted;
