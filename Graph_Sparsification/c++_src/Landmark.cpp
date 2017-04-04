@@ -99,11 +99,14 @@ void Landmark::construct_graph(vector<int>& assignment,
 		int v = ele.first.second;
 		ret.push_back(
 				Edge(u, v,
-						ele.second / (2.0f * cnt_cluster[u] * cnt_cluster[v])));
+						ele.second / (2.0f * cnt_cluster[u] * cnt_cluster[v]))); // using edge density.
 	}
 
 }
 
+
+// layer by layer, assign new nodes to existing & adjacent cluster with smallest size,
+// if multiply having the same size, then randomly pick one.
 void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
 		const vector<int>& landmarks, vector<int>& cnt_cluster) {
 	vector<int> to_be_assign(landmarks);

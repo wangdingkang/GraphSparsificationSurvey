@@ -80,14 +80,14 @@ int main() {
 			cout << "Landmark Sampling Finished." << endl;
 
 			//	RandomNode Sampling
-			RandomNode* rn = new RandomNode();
-			EdgeGraph o2 = rn->get_sampled_graph(g->get_graph(), SAMPLE_SIZE);
-			cout << "Random Node Sampling sampled " << SAMPLE_SIZE
-					<< " nodes, and " << o2.size() << " edges." << endl;
-			out->output_weighted("output/RandomNode_" + to_string(iteration) + "_" + filename, o2);
-			delete rn;
-
-			cout << "Random node Sampling Finished." << endl;
+//			RandomNode* rn = new RandomNode();
+//			EdgeGraph o2 = rn->get_sampled_graph(g->get_graph(), SAMPLE_SIZE);
+//			cout << "Random Node Sampling sampled " << SAMPLE_SIZE
+//					<< " nodes, and " << o2.size() << " edges." << endl;
+//			out->output_weighted("output/RandomNode_" + to_string(iteration) + "_" + filename, o2);
+//			delete rn;
+//
+//			cout << "Random node Sampling Finished." << endl;
 
 			// RandomWalk Sampling
 			RandomWalk* rw = new RandomWalk();

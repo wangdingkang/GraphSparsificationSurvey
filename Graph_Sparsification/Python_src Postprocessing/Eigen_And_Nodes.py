@@ -74,14 +74,14 @@ if __name__ == '__main__':
             print("Inserted Ln... ", rets_Ln[prefix_name])
 
 
-with open(output_eigen + "eigen_lp_" + suffix_name, 'w') as eigen_file:
+with open(output_eigen + "eigen_lp" + suffix_name, 'w') as eigen_file:
     for k, v in rets_Lp.items():
         # if you use normalized one, comment the division of '/cnt_node'
         for val in v:
             eigen_file.write('{0:.8f}'.format((val / iterations) if k != 'LCC' else val) + ' ')
         eigen_file.write(k + '\n')
 
-with open(output_eigen + "eigen_ln_" + suffix_name, 'w') as eigen_file:
+with open(output_eigen + "eigen_ln" + suffix_name, 'w') as eigen_file:
     for k, v in rets_Ln.items():
         # if you use normalized one, comment the division of '/cnt_node'
         for val in v:
