@@ -5,6 +5,8 @@ from os.path import isfile, join
 
 input_folder = "processed/"
 output_sp = 'results/'
+# suppose diameter won't surpass 1000
+max_diameter = 1000
 
 if __name__ == '__main__':
     onlyfiles = [f for f in listdir(input_folder) if isfile(join(input_folder, f))]
@@ -14,55 +16,45 @@ if __name__ == '__main__':
 
         G = nx.read_edgelist(join(input_folder, filename), data=(('weight',float),))
 
-
-
-        ret = {}
+        ret = [0.0 for i in range(max_diameter)]
         is_connected = False
         num_pair = 0;
-
+        cnt = 0;
+        diameter = 0;
         # compute the shortest path distances.
         if nx.is_connected(G):
             is_connected = True
-            cnt_node = nx.number_of_nodes(G)
-            num_pair = cnt_node * (cnt_node - 1) / 2
-
-
-            for node in G:
-                path_length=nx.single_source_dijkstra_path_length(G, node, weight='weight')
-                # avg += sum(path_length.values())#
-                for k, d in path_length.items():
-                    if d in ret:
-                        ret[d] += 1
-                    else:
-                        ret[d] = float(1)
-
-            for k in ret.keys():
-                ret[k] /= num_pair
-
-        #compute the shortest path length distribution of its max component.
+            print('Connected Graph.')
         else:
-            g = max(nx.connected_component_subgraphs(G), key=len)
-            cnt_node = nx.number_of_nodes(g)
-            num_pair = cnt_node * (cnt_node - 1) / 2
+            G = max(nx.connected_component_subgraphs(G), key=len)
 
-            for node in g:
-                path_length=nx.single_source_dijkstra_path_length(g, node, weight='weight')
-                # avg += sum(path_length.values())#
-                for k, d in path_length.items():
-                    if d in ret:
-                        ret[d] += 1
-                    else:
-                        ret[d] = float(1)
+        cnt_node = nx.number_of_nodes(G)
+        print(str(cnt_node) + ' nodes.')
+        num_pair = cnt_node * (cnt_node - 1) / 2
+        print('Disconnected Graph.')
 
-            for k in ret.keys():
-                ret[k] /= num_pair
+        for node in G:
+            if cnt % 50 == 0:
+                print(str(cnt) + ' nodes processed.')
+            path_length=nx.single_source_dijkstra_path_length(G, node, weight='weight')
+            # avg += sum(path_length.values())#
+            for k, d in path_length.items():
+                ret[int(d)] += 1
+                diameter = max(diameter, int(d))
+            cnt += 1
+
+        for k in range(1, diameter + 1):
+            ret[k] /= num_pair
 
         name = filename[filename.rfind('_'):]
+
+        print('Finished, writing...')
+
         with open(output_sp + 'SP_' + name, 'a') as sp_file:
             # sp_file.write('{0:.6f}'.format(ret) + ' ')
             # sp_file.write('{0:.6f}'.format(max_comp_avg_sp_length) + ' ')
-            for k, d in ret:
-                sp_file.write(str(k) + ':' + str(d) + ' ')
+            for k in range(1, diameter + 1):
+                sp_file.write(str(k) + ':' + str(ret[k]) + ' ')
             if is_connected:
                 sp_file.write('connected ')
             else:
