@@ -54,7 +54,7 @@ if __name__ == '__main__':
             # sp_file.write('{0:.6f}'.format(ret) + ' ')
             # sp_file.write('{0:.6f}'.format(max_comp_avg_sp_length) + ' ')
             for k in range(1, diameter + 1):
-                sp_file.write(str(k) + ':' + str(ret[k]) + ' ')
+                sp_file.write(str(ret[k]) + ' ') #str(k) + ':' +
             if is_connected:
                 sp_file.write('connected ')
             else:
