@@ -23,6 +23,9 @@ public:
 	vector<int> assignment;
 	vector<int> cnt_cluster;
 
+	vector<Edge> ret_eigen;
+	vector<Edge> ret_apsp;
+
 //	vector<Edge> get_sampled_graph_degree_biased();
 //
 //	vector<Edge> get_sampled_graph_degree_biased_random_assignment();
@@ -31,9 +34,11 @@ public:
 //
 //	vector<Edge> get_sampled_graph_farthest_biased();
 
-	vector<Edge> farthest_landmark_sampling(int sample_size);
+// stored in variables ret_eigen & ret_apsp, since we have multiple results and may be more.
+// void farthest_landmark_sampling(int sample_size);
 
-	vector<Edge> random_landmark_sampling(int sample_size);
+// stored in variables ret_eigen & ret_apsp, since we have multiple results and may be more.
+	void random_landmark_sampling(int sample_size);
 
 	virtual ~Landmark();
 
@@ -45,9 +50,13 @@ private:
 	 * weight between any two cluster(landmark), it's the number of connections between two landmark.
 	 */
 	void assign_nodes_to_landmarks(vector<int>& assignment,
-			const vector<int>& landmarks, vector<int>& cnt_cluster);
+			const vector<int>& landmarks, vector<int>& cnt_cluster,
+			vector<int>& depth);
 
-	void construct_graph(vector<int>& assignment, vector<int>& cnt_cluster,
+	void construct_graph_eigen(vector<int>& assignment,
+			vector<int>& cnt_cluster, vector<Edge>& ret);
+
+	void construct_graph_apsp(vector<int>& assignment, vector<int>& depth,
 			vector<Edge>& ret);
 
 	void update_depth(int s, vector<int>& depth);

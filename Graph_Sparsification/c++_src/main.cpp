@@ -48,7 +48,7 @@ int main() {
 	vector<string> files = fetch_all_input_files(INPUT_FOLDER);
 
 	for (int iteration = 1; iteration <= ITERATION; iteration++) {
-		cout << "Iteration " << iteration << " started." << endl;
+		cout << endl << "Iteration " << iteration << " started." << endl;
 
 		for (string filename : files) {
 			InputGraph* g = new InputGraph(INPUT_FOLDER + filename);
@@ -63,17 +63,24 @@ int main() {
 			EdgeGraph o1;
 
 			// random sample
-			o1 = l->random_landmark_sampling(SAMPLE_SIZE);
+			l->random_landmark_sampling(SAMPLE_SIZE);
 			cout << "Landmark Sampling random sampling with random assignment "
-					<< l->sampled_size << " nodes, and " << o1.size()
-					<< " edges." << endl;
+					<< l->sampled_size << " nodes, and " << l->ret_eigen.size()
+					<< "/" << l->ret_apsp.size() << " edges." << endl;
 			out->output_weighted(
-					"output/Landmark_" + to_string(SAMPLE_SIZE) + "_" + to_string(iteration) + "_" +  filename, o1);
+					"output/Landmark_" + to_string(SAMPLE_SIZE) + "_"
+							+ to_string(iteration) + "_" + filename,
+					l->ret_eigen);
+			out->output_weighted(
+					"output/Landmark_apsp_" + to_string(SAMPLE_SIZE) + "_"
+							+ to_string(iteration) + "_" + filename,
+					l->ret_apsp);
 			out->output_assignment(
-					"output/landmark_assignment_" + to_string(iteration) + "_" + filename + ".csv",
-					l->assignment, l->cnt_cluster);
+					"output/landmark_assignment_" + to_string(iteration) + "_"
+							+ filename + ".csv", l->assignment, l->cnt_cluster);
 			out->output_cluster_size_distribution(
-					"output/landmark_cluster_distribution_" + to_string(iteration) + "_" + filename,
+					"output/landmark_cluster_distribution_"
+							+ to_string(iteration) + "_" + filename,
 					l->cnt_cluster);
 			delete l;
 
@@ -95,7 +102,9 @@ int main() {
 					RANDOM_WALK);
 			cout << "Random Walk Sampling sampled " << rw->sampled_size
 					<< " nodes, and " << o3.size() << " edges." << endl;
-			out->output_weighted("output/RandomWalk_" + to_string(iteration) + "_" + filename, o3);
+			out->output_weighted(
+					"output/RandomWalk_" + to_string(iteration) + "_"
+							+ filename, o3);
 			delete rw;
 
 			cout << "RandomWalk Sampling Finished." << endl;
@@ -107,7 +116,9 @@ int main() {
 			SNOWBALL_K, SAMPLE_SIZE);
 			cout << "Snowball Sampling with size sampled " << sb->sampled_size
 					<< " nodes, and " << o4.size() << " edges." << endl;
-			out->output_weighted("output/Snowball_" + to_string(iteration) + "_" + filename, o4);
+			out->output_weighted(
+					"output/Snowball_" + to_string(iteration) + "_" + filename,
+					o4);
 			delete sb;
 
 			cout << "Snowball Sampling Finished." << endl;

@@ -20,9 +20,9 @@ Landmark::Landmark(const AdjLinkGraph &_graph) {
 	this->N = graph.get_num_of_nodes();
 }
 
-vector<Edge> Landmark::random_landmark_sampling(int S) {
+void Landmark::random_landmark_sampling(int S) {
 	sampled_size = 0;
-	vector<Edge> ret;
+//	vector<Edge> ret;
 	srand(time(NULL));
 	vector<int> randoms;
 	for (int i = 0; i < N; i++) {
@@ -31,7 +31,6 @@ vector<Edge> Landmark::random_landmark_sampling(int S) {
 	random_shuffle(randoms.begin(), randoms.end());
 	vector<int> landmarks(randoms.begin(), randoms.begin() + S);
 	vector<int> depth(N);
-	std::fill(depth.begin(), depth.end(), N);
 	assignment = vector<int>(N);
 	std::fill(assignment.begin(), assignment.end(), -1);
 	for (int i = 0; i < S; i++) {
@@ -42,7 +41,7 @@ vector<Edge> Landmark::random_landmark_sampling(int S) {
 	cnt_cluster = vector<int>(cnt_landmark);
 	fill(cnt_cluster.begin(), cnt_cluster.end(), 1);
 
-	assign_nodes_to_landmarks(assignment, landmarks, cnt_cluster);
+	assign_nodes_to_landmarks(assignment, landmarks, cnt_cluster, depth);
 	int cnt_cmax = *max_element(cnt_cluster.begin(), cnt_cluster.end());
 	int cnt_cmin = *min_element(cnt_cluster.begin(), cnt_cluster.end());
 	cerr << "max_cluster has " << cnt_cmax << " nodes, and min_cluster has "
@@ -71,14 +70,41 @@ vector<Edge> Landmark::random_landmark_sampling(int S) {
 //	cnt_cmax = *max_element(cnt_cluster.begin(), cnt_cluster.end());
 //	cnt_cmin = *min_element(cnt_cluster.begin(), cnt_cluster.end());
 //	cerr << "after removal, max = " << cnt_cmax << ", min = " << cnt_cmin << "." <<  endl;
-	construct_graph(assignment, cnt_cluster, ret);
-
+	construct_graph_eigen(assignment, cnt_cluster, ret_eigen);
+	construct_graph_apsp(assignment, depth, ret_apsp);
 	sampled_size = (int) landmarks.size();
-	return ret;
+//	return ret;
 }
 
-void Landmark::construct_graph(vector<int>& assignment,
+void Landmark::construct_graph_apsp(vector<int>& assignment, vector<int>& depth,
+		vector<Edge>& ret) {
+	ret.clear();
+	map<pair<int, int>, int> connections;
+	for (int i = 0; i < N; i++) {
+		int a = assignment[i];
+		for (auto& child : graph.adjlink[i]) {
+			int b = assignment[child.v];
+			if (a != b) {
+				pair<int, int> tp = make_pair(min(a, b), max(a, b));
+				int distance = depth[i] + depth[child.v] + 1;
+				if (connections.find(tp) != connections.end()) {
+					connections[tp] = min(connections[tp], distance);
+				} else {
+					connections.insert(make_pair(tp, distance));
+				}
+			}
+		}
+	}
+	for (auto& ele : connections) {
+		int u = ele.first.first;
+		int v = ele.first.second;
+		ret.push_back(Edge(u, v, ele.second)); // using shortest path between two landmarks.
+	}
+}
+
+void Landmark::construct_graph_eigen(vector<int>& assignment,
 		vector<int> &cnt_cluster, vector<Edge>& ret) {
+	ret.clear();
 	map<pair<int, int>, double> connections;
 	for (int i = 0; i < N; i++) {
 		int a = assignment[i];
@@ -101,16 +127,16 @@ void Landmark::construct_graph(vector<int>& assignment,
 				Edge(u, v,
 						ele.second / (2.0f * cnt_cluster[u] * cnt_cluster[v]))); // using edge density.
 	}
-
 }
-
 
 // layer by layer, assign new nodes to existing & adjacent cluster with smallest size,
 // if multiply having the same size, then randomly pick one.
 void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
-		const vector<int>& landmarks, vector<int>& cnt_cluster) {
+		const vector<int>& landmarks, vector<int>& cnt_cluster,
+		vector<int>& depth) {
 	vector<int> to_be_assign(landmarks);
 	add_set_to_assign(assignment, to_be_assign);
+	int td = 0;
 	while (!to_be_assign.empty()) {
 		for (auto& node : to_be_assign) {
 			vector<int> candidates;
@@ -130,8 +156,10 @@ void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
 			int r = rand() % (int) candidates.size();
 			assignment[node] = candidates[r];
 			cnt_cluster[candidates[r]]++;
+			depth[node] = td;
 		}
 		add_set_to_assign(assignment, to_be_assign);
+		td++;
 	}
 }
 
