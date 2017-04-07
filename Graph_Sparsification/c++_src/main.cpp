@@ -21,7 +21,7 @@
 #define FOREST_FIRE_N 1	// similar as SNOWBALL_N
 #define FOREST_FIRE_K 5	// the number of neighbors picked ~ Geo(K).
 
-int SAMPLE_SIZE = 1500; // default to 1000, but reset to SAMPLE_SIZE * the size of original graph.
+int SAMPLE_SIZE = 1000; // default to 1000, but reset to SAMPLE_SIZE * the size of original graph.
 
 vector<string> fetch_all_input_files(const string input_folder) {
 	struct dirent *entry;
@@ -47,14 +47,13 @@ int main() {
 
 	vector<string> files = fetch_all_input_files(INPUT_FOLDER);
 
-	for (int iteration = 1; iteration <= ITERATION; iteration++) {
-		cout << endl << "Iteration " << iteration << " started." << endl;
-
-		for (string filename : files) {
-			InputGraph* g = new InputGraph(INPUT_FOLDER + filename);
+	for (string filename : files) {
+		InputGraph* g = new InputGraph(INPUT_FOLDER + filename);
+		cout << "File " << filename << " Read." << endl;
+		for (int iteration = 1; iteration <= ITERATION; iteration++) {
+			cout << endl << "Iteration " << iteration << " started." << endl;
 			OutputGraph* out = new OutputGraph();
 
-			cout << "File " << filename << " Read." << endl;
 			g->show();
 
 			// Landmark Sampling
@@ -124,8 +123,8 @@ int main() {
 			cout << "Snowball Sampling Finished." << endl;
 
 			delete out;
-			delete g;
 		}
+		delete g;
 	}
 	return 0;
 }
