@@ -5,9 +5,10 @@ from os.path import isfile, join
 
 input_folder = "processed/"
 output_sp = 'results/'
-# suppose diameter won't surpass 1000
+# suppose diameter won't surpass 1500
+# ignore distances that larger than 100
 max_diameter = 100
-iteration = 2
+iteration = 10
 rets_apsp = {}
 
 if __name__ == '__main__':
@@ -39,8 +40,9 @@ if __name__ == '__main__':
             path_length=nx.single_source_dijkstra_path_length(G, node, weight='weight')
             # avg += sum(path_length.values())#
             for k, d in path_length.items():
-                ret[int(d)] += 1
-                diameter = max(diameter, int(d))
+                if int(d) < max_diameter:
+                    ret[int(d)] += 1
+                    diameter = max(diameter, int(d))
             cnt += 1
         # distance to itself is 0, we need to zero it out.
         ret[0] = 0
@@ -54,7 +56,7 @@ if __name__ == '__main__':
 
     print('Finished, writing...')
     # output CUMULATIVE apsp distributions
-    with open(output_sp + 'apsp_' + suffix_name, 'a') as sp_file:
+    with open(output_sp + 'apsp' + suffix_name, 'a') as sp_file:
         # sp_file.write('{0:.6f}'.format(ret) + ' ')
         # sp_file.write('{0:.6f}'.format(max_comp_avg_sp_length) + ' ')
         for type, vals in rets_apsp.items():
