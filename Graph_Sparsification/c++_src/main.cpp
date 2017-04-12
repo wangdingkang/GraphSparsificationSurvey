@@ -21,8 +21,8 @@
 #define FOREST_FIRE_N 1	// similar as SNOWBALL_N
 #define FOREST_FIRE_K 5	// the number of neighbors picked ~ Geo(K).
 
-int SAMPLE_SIZE = 1000; // default to 1000, but reset to SAMPLE_RATE * the size of original graph.
-vector<double> SAMPLE_RATES = { 0.001, 0.01, 0.1 };
+// int SAMPLE_SIZE = 1000; // default to 1000, but reset to SAMPLE_RATE * the size of original graph.
+vector<int> SAMPLE_SIZES = { 500, 1000, 1500, 2000 };
 
 vector<string> fetch_all_input_files(const string input_folder) {
 	struct dirent *entry;
@@ -53,8 +53,7 @@ int main() {
 		cout << "File " << filename << " Read." << endl;
 		int original_graph_size = g->num_nodes();
 		cout << "Original graph has " << original_graph_size << " nodes." << endl;
-		for (auto rate : SAMPLE_RATES) {
-			SAMPLE_SIZE = original_graph_size * rate;
+		for (auto SAMPLE_SIZE : SAMPLE_SIZES) {
 			for (int iteration = 1; iteration <= ITERATION; iteration++) {
 				cout << endl << "Iteration " << iteration << " started."
 						<< endl;
@@ -79,15 +78,15 @@ int main() {
 								+ to_string(iteration) + "_" + filename,
 						l->ret_eigen);
 				out->output_weighted(
-						"output/Landmark_apsp_" + to_string(SAMPLE_SIZE) + "_"
+						"output/LandmarkApsp_" + to_string(SAMPLE_SIZE) + "_"
 								+ to_string(iteration) + "_" + filename,
 						l->ret_apsp);
 				out->output_assignment(
-						"output/landmark_assignment_" + to_string(SAMPLE_SIZE)
+						"output/landmarkAssignment_" + to_string(SAMPLE_SIZE)
 								+ "_" + to_string(iteration) + "_" + filename
 								+ ".csv", l->assignment, l->cnt_cluster);
 				out->output_cluster_size_distribution(
-						"output/landmark_cluster_distribution_"
+						"output/landmarkClusterDistribution_"
 								+ to_string(SAMPLE_SIZE) + "_"
 								+ to_string(iteration) + "_" + filename,
 						l->cnt_cluster);

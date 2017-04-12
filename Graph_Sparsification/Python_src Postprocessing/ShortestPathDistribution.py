@@ -7,7 +7,7 @@ input_folder = "processed/"
 output_sp = 'results/'
 # suppose diameter won't surpass 1500
 # ignore distances that larger than 100
-max_diameter = 100
+cut_off = 25
 iteration = 10
 rets_apsp = {}
 
@@ -18,14 +18,14 @@ if __name__ == '__main__':
         print('processing ' + filename)
 
         suffix_name = filename[filename.rfind('_'):]
-        prefix_name = filename[:filename.find('_')]
+        prefix_name = filename[:filename.find('_', filename.find('_') + 1)]
 
         G = nx.read_edgelist(join(input_folder, filename), data=(('weight',float),))
 
-        ret = [0.0 for i in range(max_diameter)]
+        ret = [0.0 for i in range(cut_off + 1)]
         num_pair = 0;
         cnt = 0;
-        diameter = 0;
+
         # compute the shortest path distances.
         if not nx.is_connected(G):
             G = max(nx.connected_component_subgraphs(G), key=len)
@@ -37,16 +37,14 @@ if __name__ == '__main__':
         for node in G:
             if cnt % 100 == 0:
                 print(str(cnt) + ' nodes processed.')
-            path_length=nx.single_source_dijkstra_path_length(G, node, weight='weight')
+            path_length=nx.single_source_dijkstra_path_length(G, node, weight='weight', cutoff=cut_off)
             # avg += sum(path_length.values())#
             for k, d in path_length.items():
-                if int(d) < max_diameter:
-                    ret[int(d)] += 1
-                    diameter = max(diameter, int(d))
+                ret[int(d)] += 1
             cnt += 1
         # distance to itself is 0, we need to zero it out.
         ret[0] = 0
-        for k in range(1, diameter + 1):
+        for k in range(1, cut_off + 1):
             ret[k] /= num_pair
         if prefix_name in rets_apsp:
             rets_apsp[prefix_name] = [x + y for x, y in zip(ret, rets_apsp[prefix_name])]
@@ -55,16 +53,23 @@ if __name__ == '__main__':
         print(rets_apsp[prefix_name])
 
     print('Finished, writing...')
+    # output histogram
+    with open(output_sp + 'asps_histo' + suffix_name, 'a') as sp_file:
+        for type, vals in rets_apsp.items():
+            for v in vals:
+                sp_file.write("{0:.4f}".format(v / iteration) + ' ')
+            sp_file.write(type + '\n')
+
+
     # output CUMULATIVE apsp distributions
-    with open(output_sp + 'apsp' + suffix_name, 'a') as sp_file:
+    with open(output_sp + 'apsp_cumul' + suffix_name, 'a') as sp_file:
         # sp_file.write('{0:.6f}'.format(ret) + ' ')
         # sp_file.write('{0:.6f}'.format(max_comp_avg_sp_length) + ' ')
         for type, vals in rets_apsp.items():
             sum = 0.0
-            sp_file.write(str(0.0) + ' ')
             for v in vals:
                 sum += v
-                sp_file.write(str(sum / iteration) + ' ') #str(k) + ':' +
+                sp_file.write("{0:.4f}".format(sum / iteration) + ' ') #str(k) + ':' +
             sp_file.write(type + '\n')
 
         # ans = nx.average_shortest_path_length(G)
