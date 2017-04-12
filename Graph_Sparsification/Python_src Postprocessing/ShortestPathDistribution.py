@@ -54,23 +54,23 @@ if __name__ == '__main__':
 
     print('Finished, writing...')
     # output histogram
-    with open(output_sp + 'asps_histo' + suffix_name, 'a') as sp_file:
+    with open(output_sp + 'asps' + suffix_name, 'a') as sp_file:
         for type, vals in rets_apsp.items():
             for v in vals:
                 sp_file.write("{0:.4f}".format(v / iteration) + ' ')
             sp_file.write(type + '\n')
 
-
+    # let matlab do the work.
     # output CUMULATIVE apsp distributions
-    with open(output_sp + 'apsp_cumul' + suffix_name, 'a') as sp_file:
-        # sp_file.write('{0:.6f}'.format(ret) + ' ')
-        # sp_file.write('{0:.6f}'.format(max_comp_avg_sp_length) + ' ')
-        for type, vals in rets_apsp.items():
-            sum = 0.0
-            for v in vals:
-                sum += v
-                sp_file.write("{0:.4f}".format(sum / iteration) + ' ') #str(k) + ':' +
-            sp_file.write(type + '\n')
+    # with open(output_sp + 'apsp_cumul' + suffix_name, 'a') as sp_file:
+    #     # sp_file.write('{0:.6f}'.format(ret) + ' ')
+    #     # sp_file.write('{0:.6f}'.format(max_comp_avg_sp_length) + ' ')
+    #     for type, vals in rets_apsp.items():
+    #         sum = 0.0
+    #         for v in vals:
+    #             sum += v
+    #             sp_file.write("{0:.4f}".format(sum / iteration) + ' ') #str(k) + ':' +
+    #         sp_file.write(type + '\n')
 
         # ans = nx.average_shortest_path_length(G)
 
