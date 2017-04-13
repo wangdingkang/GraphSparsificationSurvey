@@ -1,6 +1,8 @@
 folder = 'asps/';
 files = dir(strcat(folder, '*.txt'));
 
+colors = [0 0 0; 1 0 0; 0.8 0 0; 0.6 0 0; 0.4 0 0; 0 1 0; 0 0.8 0; 0 0.6 0; 0 0.4 0; 0 0 1; 0 0 0.8; 0 0 0.6; 0 0 0.4];
+
 for i = 1 : length(files)
     filename = files(i).name;
     
@@ -14,7 +16,7 @@ for i = 1 : length(files)
     
     base_histo = zeros(1, 26);
     base_cum = zeros(1, 26);
-    
+    ci = 1;
     while ischar(tline)
         C = strsplit(tline);
         s = size(C, 2);
@@ -26,19 +28,24 @@ for i = 1 : length(files)
         if strcmp(str, 'LCC')
             base_histo = data;
             base_cum = cumsum(data);
-        %else
-         %   str
-          %  corrcoef(base_histo, data)
-           % corrcoef(base_cum, cumsum(data))
+        else
+            % str
+            % corrcoef(base_histo, data)
+            % corrcoef(base_cum, cumsum(data))
+            % norm(base_histo - data)
+            % norm(base_cum - cumsum(data))
         end
+        
+        color = colors(ci, :);
+        ci = ci + 1;
         
         figure(hFig);
         hold on;
-        plot(0:1:(s-2), data, 'o-', 'DisplayName', str);
+        plot(0:1:(s-2), data, 'o-', 'DisplayName', str, 'Color', color);
         
         figure(acFig);
         hold on;
-        plot(0:1:(s-2), cumsum(data), 'o-', 'DisplayName', str);
+        plot(0:1:(s-2), cumsum(data), 'o-', 'DisplayName', str, 'Color', color);
         
         tline = fgetl(fid);
     end
