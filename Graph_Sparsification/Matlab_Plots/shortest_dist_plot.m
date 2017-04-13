@@ -11,21 +11,34 @@ for i = 1 : length(files)
     set(acFig, 'Position', [1000 0 2000 1200]);
     
     tline = fgetl(fid);
+    
+    base_histo = zeros(1, 26);
+    base_cum = zeros(1, 26);
+    
     while ischar(tline)
         C = strsplit(tline);
         s = size(C, 2);
         str = C(1, s);
         str = str{1, 1};
         
-        data = str2double(C(1, 1:(s-2)));
+        data = str2double(C(1, 1:(s-1)));
+        
+        if strcmp(str, 'LCC')
+            base_histo = data;
+            base_cum = cumsum(data);
+        %else
+         %   str
+          %  corrcoef(base_histo, data)
+           % corrcoef(base_cum, cumsum(data))
+        end
         
         figure(hFig);
         hold on;
-        plot(1:1:(s-2), data, 'o-', 'DisplayName', str);
+        plot(0:1:(s-2), data, 'o-', 'DisplayName', str);
         
         figure(acFig);
         hold on;
-        plot(1:1:(s-2), cumsum(data), 'o-', 'DisplayName', str);
+        plot(0:1:(s-2), cumsum(data), 'o-', 'DisplayName', str);
         
         tline = fgetl(fid);
     end
