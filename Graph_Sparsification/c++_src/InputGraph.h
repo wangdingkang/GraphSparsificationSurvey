@@ -15,9 +15,10 @@ typedef pair<int, int> PII;
 class InputGraph {
 public:
 
+	InputGraph(){}
 	InputGraph(string filename);
 
-	AdjLinkGraph get_graph();
+	AdjLinkGraph graph; // edges in the original graph.
 
 	void show() {
 		cout << N << " nodes, and " << M << " edges." << endl;
@@ -27,13 +28,19 @@ public:
 
 	virtual ~InputGraph();
 
+	vector<int> degree_random_sample(int S);
+
+	vector<double> sp_distribution(unordered_set<int> &indexes, int cut_off);
+
+	vector<double> sp_distribution(vector<int> &indexes, int cut_off);
+
+	void sp_bfs(vector<double> &rets, unordered_set<int> &indexes, int p, int cut_off);
+
 private:
 
 	string filename;
 
 	int N, M; // #nodes, #edges of the original graph.
-
-	AdjLinkGraph graph; // edges in the original graph.
 
 	int cnt_index = 0;
 

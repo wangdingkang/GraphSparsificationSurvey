@@ -9,17 +9,23 @@
 #define LANDMARK_H_
 
 #include "Structures.h"
+#include "InputGraph.h"
+
+enum landmark_type {
+	UNIFORM, DEGREE_BIASED
+};
 
 class Landmark {
 public:
 //	Landmark(int depth, const AdjLinkGraph &graph);
-	Landmark(const AdjLinkGraph &graph);
+	Landmark(const InputGraph &graph);
 
 //	int SEARCH_DEPTH;
 	int sampled_size;
 	int N;
 
-	AdjLinkGraph graph;
+	InputGraph network;
+	vector<int> subset;
 	vector<int> assignment;
 	vector<int> cnt_cluster;
 
@@ -38,7 +44,7 @@ public:
 // void farthest_landmark_sampling(int sample_size);
 
 // stored in variables ret_eigen & ret_apsp, since we have multiple results and may be more.
-	void random_landmark_sampling(int sample_size);
+	void landmark_sampling(int sample_size, landmark_type t);
 
 	virtual ~Landmark();
 
@@ -59,9 +65,9 @@ private:
 	void construct_graph_apsp(vector<int>& assignment, vector<int>& depth,
 			vector<Edge>& ret);
 
-	void update_depth(int s, vector<int>& depth);
-
 	void add_set_to_assign(vector<int>& assignment, vector<int>& assign_set);
+
+//	void update_depth(int s, vector<int>& depth);
 
 //	void bfs_search(int s, vector<int>& visited);
 //

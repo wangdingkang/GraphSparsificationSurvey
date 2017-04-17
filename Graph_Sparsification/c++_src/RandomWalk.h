@@ -23,6 +23,8 @@ public:
 
 	int sampled_size;
 
+	unordered_set<int> subset;
+
 	vector<Edge> get_sampled_graph(const AdjLinkGraph& graph, int sampled_size, random_walk_type t, double p = 0.1);
 
 	virtual ~RandomWalk();

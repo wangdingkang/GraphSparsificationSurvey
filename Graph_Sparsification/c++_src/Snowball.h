@@ -16,6 +16,8 @@ public:
 
 	int sampled_size;
 
+	unordered_set<int> subset;
+
 	EdgeGraph snowball_sampling(const AdjLinkGraph& graph, int arg_N, int arg_K, int arg_T);
 
 	EdgeGraph snowball_sampling_with_size(const AdjLinkGraph& graph, int arg_N, int arg_K, int arg_SN);

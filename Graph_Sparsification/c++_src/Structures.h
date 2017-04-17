@@ -111,6 +111,7 @@ struct AdjLinkGraph {
 		adjlink[u].push_back(Edge_Out(v, 1.0));
 	}
 
+
 };
 
 typedef pair<int, int> PII;

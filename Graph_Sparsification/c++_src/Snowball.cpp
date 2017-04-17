@@ -53,6 +53,7 @@ EdgeGraph Snowball::snowball_sampling(const AdjLinkGraph& graph, int arg_N,
 		}
 	}
 	sampled_size = v_selected.size();
+	subset = v_selected;
 	return g_sample;
 }
 
@@ -63,7 +64,8 @@ EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& graph,
 	const auto& v0_vec = random_ints(graph.get_num_of_nodes(), arg_N);
 	unordered_set<int> v_prev(v0_vec.begin(), v0_vec.end());
 	unordered_set<int> v_selected(v_prev);
-	while((int)v_selected.size() < arg_SN) {
+	int iterations = 0;
+	while((int)v_selected.size() < arg_SN && iterations <= arg_SN) {
 		unordered_set<int> v_i;
 		// work as a buffer
 		EdgeGraph temp;
@@ -89,8 +91,10 @@ EdgeGraph Snowball::snowball_sampling_with_size(const AdjLinkGraph& graph,
 				g_sample.push_back(Edge(edge.u, edge.v, edge.w));
 			}
 		}
+		iterations++;
 	}
 	sampled_size = v_selected.size();
+	subset = v_selected;
 	return g_sample;
 }
 

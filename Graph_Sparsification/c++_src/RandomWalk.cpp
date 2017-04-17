@@ -66,16 +66,15 @@ EdgeGraph RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
 
 	int iterations = 0;
 	int cnt_nodes = 0;
-	bool visited[n];
-	memset(visited, false, sizeof(visited));
 	EdgeGraph ret;
+	unordered_set<int> nodes;
 	set<pair<int, int>> my_set;
 
 	// if walk too long, and still get too few points, just return the sampled points.
 	while (cnt_nodes < sampled_size && iterations < 5 * sampled_size) {
-		if (!visited[s]) {
+		if (!nodes.count(s)) {
 			cnt_nodes++;
-			visited[s] = true;
+			nodes.insert(s);
 		}
 		int m = graph.get_num_edge_of_node(s);
 		int next = rand() % m;
@@ -90,8 +89,9 @@ EdgeGraph RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
 		iterations++;
 	}
 
-	if(!visited[s]) ret.pop_back();
+	if(!nodes.count(s)) ret.pop_back();
 	this->sampled_size = cnt_nodes;
+	this->subset = nodes;
 	return ret;
 }
 

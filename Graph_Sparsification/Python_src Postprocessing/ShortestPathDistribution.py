@@ -55,8 +55,8 @@ if __name__ == '__main__':
     print('Finished, writing...')
     # output histogram
     with open(output_sp + 'asps' + suffix_name, 'a') as sp_file:
-        for type, vals in rets_apsp.items():
-            for v in vals:
+        for type in sorted(rets_apsp):
+            for v in rets_apsp[type]:
                 sp_file.write("{0:.4f}".format(v / iteration) + ' ')
             sp_file.write(type + '\n')
 

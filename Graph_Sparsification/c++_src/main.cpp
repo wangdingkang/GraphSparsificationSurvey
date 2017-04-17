@@ -14,6 +14,7 @@
 //#define SAMPLE_RATE 0.075	// how much fraction to be sampled
 
 #define ITERATION 10
+#define CUT_OFF 25
 
 #define SNOWBALL_N 1	// The size of starting set
 #define SNOWBALL_K 5	// each time pick random K neighbors of each nodes in previous set.
@@ -44,57 +45,183 @@ vector<string> fetch_all_input_files(const string input_folder) {
 	return filenames;
 }
 
+map<string, vector<double>> subset_pairwise;
+
 int main() {
 
 	vector<string> files = fetch_all_input_files(INPUT_FOLDER);
 
+	OutputGraph* out = new OutputGraph();
 	for (string filename : files) {
 		InputGraph* g = new InputGraph(INPUT_FOLDER + filename);
 		cout << "File " << filename << " Read." << endl;
 		int original_graph_size = g->num_nodes();
-		cout << "Original graph has " << original_graph_size << " nodes." << endl;
+		cout << "Original graph has " << original_graph_size << " nodes."
+				<< endl;
 		for (auto SAMPLE_SIZE : SAMPLE_SIZES) {
+
+			string landmarkU_key = "LCC_Landmark_Uniform_"
+					+ to_string(SAMPLE_SIZE) + "_subset.txt";
+			string landmarkD_key = "LCC_Landmark_Degree_"
+					+ to_string(SAMPLE_SIZE) + "_subset.txt";
+			string snowball_key = "LCC_Snowball_" + to_string(SAMPLE_SIZE)
+					+ "_subset.txt";
+			string randomwalk_key = "LCC_Randomwalk_" + to_string(SAMPLE_SIZE)
+					+ "_subset.txt";
+
+			subset_pairwise.insert(
+					make_pair(landmarkD_key, vector<double>(CUT_OFF)));
+			subset_pairwise.insert(
+					make_pair(landmarkU_key, vector<double>(CUT_OFF)));
+			subset_pairwise.insert(
+					make_pair(snowball_key, vector<double>(CUT_OFF)));
+			subset_pairwise.insert(
+					make_pair(randomwalk_key, vector<double>(CUT_OFF)));
+
 			for (int iteration = 1; iteration <= ITERATION; iteration++) {
 				cout << endl << "Iteration " << iteration << " started."
 						<< endl;
-				OutputGraph* out = new OutputGraph();
-
 				g->show();
 
-				// Landmark Sampling
-				cout << "Landmark Sampling." << endl;
-				Landmark* l = new Landmark(g->get_graph());
-				EdgeGraph o1;
+				// Landmark sampling using degree biased distrbution
+				cout << "Landmark Degree Sampling." << endl;
+				Landmark* ld = new Landmark(*g);
 
-				// random sample
-				l->random_landmark_sampling(SAMPLE_SIZE);
+				ld->landmark_sampling(SAMPLE_SIZE, DEGREE_BIASED);
+				cout
+						<< "Landmark Sampling degree sampling with random assignment "
+						<< ld->sampled_size << " nodes, and "
+						<< ld->ret_eigen.size() << "/" << ld->ret_apsp.size()
+						<< " edges." << endl;
+
+				vector<double> t0 = g->sp_distribution(ld->subset, CUT_OFF);
+				for (int c = 0; c <= CUT_OFF; c++) {
+					subset_pairwise[landmarkD_key][c] += t0[c];
+				}
+
+				out->output_weighted(
+						"output/LandmarkDApsp_" + to_string(SAMPLE_SIZE) + "_"
+								+ to_string(iteration) + "_" + filename,
+						ld->ret_apsp);
+				out->output_subset(
+						"output/LandmarkDSubset_" + to_string(SAMPLE_SIZE) + "_"
+								+ to_string(iteration) + "_" + filename,
+						ld->subset);
+
+				delete ld;
+
+				cout << "Landmark Sampling Degree Finished." << endl;
+
+				// Landmark Sampling with uniformly distributed sampling prob
+				cout << "Landmark Uniform Sampling." << endl;
+				Landmark* lu = new Landmark(*g);
+
+				lu->landmark_sampling(SAMPLE_SIZE, UNIFORM);
 				cout
 						<< "Landmark Sampling random sampling with random assignment "
-						<< l->sampled_size << " nodes, and "
-						<< l->ret_eigen.size() << "/" << l->ret_apsp.size()
+						<< lu->sampled_size << " nodes, and "
+						<< lu->ret_eigen.size() << "/" << lu->ret_apsp.size()
 						<< " edges." << endl;
-				out->output_weighted(
-						"output/Landmark_" + to_string(SAMPLE_SIZE) + "_"
-								+ to_string(iteration) + "_" + filename,
-						l->ret_eigen);
-				out->output_weighted(
-						"output/LandmarkApsp_" + to_string(SAMPLE_SIZE) + "_"
-								+ to_string(iteration) + "_" + filename,
-						l->ret_apsp);
-				out->output_assignment(
-						"output/landmarkAssignment_" + to_string(SAMPLE_SIZE)
-								+ "_" + to_string(iteration) + "_" + filename
-								+ ".csv", l->assignment, l->cnt_cluster);
-				out->output_cluster_size_distribution(
-						"output/landmarkClusterDistribution_"
-								+ to_string(SAMPLE_SIZE) + "_"
-								+ to_string(iteration) + "_" + filename,
-						l->cnt_cluster);
-				delete l;
 
-				cout << "Landmark Sampling Finished." << endl;
+				vector<double> t1 = g->sp_distribution(lu->subset, CUT_OFF);
+				for (int c = 0; c <= CUT_OFF; c++) {
+					subset_pairwise[landmarkU_key][c] += t1[c];
+				}
 
-				//	RandomNode Sampling
+				out->output_weighted(
+						"output/LandmarkUApsp_" + to_string(SAMPLE_SIZE) + "_"
+								+ to_string(iteration) + "_" + filename,
+						lu->ret_apsp);
+				out->output_subset(
+						"output/LandmarkUSubset_" + to_string(SAMPLE_SIZE) + "_"
+								+ to_string(iteration) + "_" + filename,
+						lu->subset);
+
+				delete lu;
+
+				cout << "Landmark Uniform Sampling Finished." << endl;
+
+				// RandomWalk Sampling
+				RandomWalk* rw = new RandomWalk();
+				EdgeGraph o3 = rw->get_sampled_graph(g->graph, SAMPLE_SIZE,
+						RANDOM_WALK);
+
+				cout << "Random Walk Sampling sampled " << rw->sampled_size
+						<< " nodes, and " << o3.size() << " edges." << endl;
+
+				vector<double> t2 = g->sp_distribution(rw->subset, CUT_OFF);
+				for (int c = 0; c <= CUT_OFF; c++) {
+					subset_pairwise[randomwalk_key][c] += t2[c];
+				}
+
+				out->output_weighted(
+						"output/RandomWalk_" + to_string(SAMPLE_SIZE) + "_"
+								+ to_string(iteration) + "_" + filename, o3);
+				out->output_subset(
+						"output/RandomWalkSubset_" + to_string(SAMPLE_SIZE)
+								+ "_" + to_string(iteration) + "_" + filename,
+						rw->subset);
+				delete rw;
+
+				cout << "RandomWalk Sampling Finished." << endl;
+
+				// Snowball Sampling
+				Snowball* sb = new Snowball();
+				EdgeGraph o4 = sb->snowball_sampling_with_size(g->graph,
+				SNOWBALL_N,
+				SNOWBALL_K, SAMPLE_SIZE);
+				cout << "Snowball Sampling with size sampled "
+						<< sb->sampled_size << " nodes, and " << o4.size()
+						<< " edges." << endl;
+
+				vector<double> t3 = g->sp_distribution(sb->subset, CUT_OFF);
+				for (int c = 0; c <= CUT_OFF; c++) {
+					subset_pairwise[snowball_key][c] += t3[c];
+				}
+
+				out->output_weighted(
+						"output/Snowball_" + to_string(SAMPLE_SIZE) + "_"
+								+ to_string(iteration) + "_" + filename, o4);
+
+				out->output_subset(
+						"output/SnowballSubset_" + to_string(SAMPLE_SIZE) + "_"
+								+ to_string(iteration) + "_" + filename,
+						sb->subset);
+
+				delete sb;
+
+				cout << "Snowball Sampling Finished." << endl;
+
+			}
+		}
+		// write subset_distribution
+		out->output_subset_spd("output/0_SubsetDistribution_" + filename,
+				subset_pairwise, ITERATION);
+
+		delete g;
+	}
+	delete out;
+	return 0;
+}
+
+
+
+//				out->output_weighted(
+//						"output/Landmark_" + to_string(SAMPLE_SIZE) + "_"
+//								+ to_string(iteration) + "_" + filename,
+//						l->ret_eigen);
+
+//				out->output_assignment(
+//						"output/landmarkAssignment_" + to_string(SAMPLE_SIZE)
+//								+ "_" + to_string(iteration) + "_" + filename
+//								+ ".csv", l->assignment, l->cnt_cluster);
+//				out->output_cluster_size_distribution(
+//						"output/landmarkClusterDistribution_"
+//								+ to_string(SAMPLE_SIZE) + "_"
+//								+ to_string(iteration) + "_" + filename,
+//						l->cnt_cluster);
+
+//			RandomNode Sampling
 //			RandomNode* rn = new RandomNode();
 //			EdgeGraph o2 = rn->get_sampled_graph(g->get_graph(), SAMPLE_SIZE);
 //			cout << "Random Node Sampling sampled " << SAMPLE_SIZE
@@ -103,42 +230,6 @@ int main() {
 //			delete rn;
 //
 //			cout << "Random node Sampling Finished." << endl;
-
-				// RandomWalk Sampling
-				RandomWalk* rw = new RandomWalk();
-				EdgeGraph o3 = rw->get_sampled_graph(g->get_graph(),
-						SAMPLE_SIZE, RANDOM_WALK);
-				cout << "Random Walk Sampling sampled " << rw->sampled_size
-						<< " nodes, and " << o3.size() << " edges." << endl;
-				out->output_weighted(
-						"output/RandomWalk_" + to_string(SAMPLE_SIZE) + "_"
-								+ to_string(iteration) + "_" + filename, o3);
-				delete rw;
-
-				cout << "RandomWalk Sampling Finished." << endl;
-
-				// Snowball Sampling
-				Snowball* sb = new Snowball();
-				EdgeGraph o4 = sb->snowball_sampling_with_size(g->get_graph(),
-				SNOWBALL_N,
-				SNOWBALL_K, SAMPLE_SIZE);
-				cout << "Snowball Sampling with size sampled "
-						<< sb->sampled_size << " nodes, and " << o4.size()
-						<< " edges." << endl;
-				out->output_weighted(
-						"output/Snowball_" + to_string(SAMPLE_SIZE) + "_"
-								+ to_string(iteration) + "_" + filename, o4);
-				delete sb;
-
-				cout << "Snowball Sampling Finished." << endl;
-
-				delete out;
-			}
-		}
-		delete g;
-	}
-	return 0;
-}
 
 //		// Forest Fire Sampling
 //		ForestFireSampling* ffs = new ForestFireSampling();

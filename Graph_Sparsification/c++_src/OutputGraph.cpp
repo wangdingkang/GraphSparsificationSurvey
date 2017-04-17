@@ -81,6 +81,38 @@ void OutputGraph::output_weighted(string filename, EdgeGraph g) {
 	fout.close();
 }
 
+void OutputGraph::output_subset(string filename, vector<int>& subset) {
+	ofstream fout;
+	fout.open(filename);
+	for (auto &s : subset) {
+		fout << s << endl;
+	}
+	fout.close();
+}
+
+void OutputGraph::output_subset(string filename, unordered_set<int>& subset) {
+	ofstream fout;
+	fout.open(filename);
+	for (auto &s : subset) {
+		fout << s << endl;
+	}
+	fout.close();
+}
+
+void OutputGraph::output_subset_spd(string filename,
+		map<string, vector<double> > dist, int iteration) {
+	ofstream fout;
+	fout << fixed << setprecision(4);
+	fout.open(filename);
+	for (auto &item : dist) {
+		for (auto &v : item.second) {
+			fout << v / iteration << " ";
+		}
+		fout << item.first << endl;
+	}
+	fout.close();
+}
+
 OutputGraph::~OutputGraph() {
 	// TODO Auto-generated destructor stub
 }
