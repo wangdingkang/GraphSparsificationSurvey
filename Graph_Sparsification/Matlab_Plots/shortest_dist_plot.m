@@ -1,12 +1,13 @@
-folder = 'asps/';
-files = dir(strcat(folder, '*.txt'));
-
-colors = [0 0 0; 1 0 0; 0.8 0 0; 0.6 0 0; 0.4 0 0; 0 1 0; 0 0.8 0; 0 0.6 0; 0 0.4 0; 0 0 1; 0 0 0.8; 0 0 0.6; 0 0 0.4; 0 1 1; 0 0.8 0.8; 0 0.6 0.6; 0 0.4 0.4];
+input = 'asps/';
+files = dir(strcat(input, '*.txt'));
+all_distances = [];
+colors = [0 0 0; 1 0 0; 0.8 0 0; 0.6 0 0; 0.4 0 0; 0 1 0; 0 0.8 0; 0 0.6 0; 0 0.4 0; 0 0 1; 0 0 0.8; 0 0 0.6; 0 0 0.4; 1 1 0; 0.8 0.8 0; 0.6 0.6 0; 0.4 0.4 0];
 
 for i = 1 : length(files)
     filename = files(i).name;
     
-    fid = fopen(strcat(folder, filename));
+    distances = [0; 0];
+    fid = fopen(strcat(input, filename));
     hFig = figure;
     acFig = figure;
     set(hFig, 'Position', [0 0 2000 1200]);
@@ -17,6 +18,7 @@ for i = 1 : length(files)
     base_histo = zeros(1, 26);
     base_cum = zeros(1, 26);
     ci = 1;
+    
     while ischar(tline)
         C = strsplit(tline);
         s = size(C, 2);
@@ -26,16 +28,21 @@ for i = 1 : length(files)
         data = str2double(C(1, 1:(s-1)));
         
         if strcmp(str, 'LCC')
-            base_histo = data;
+            base_histo = data ./ norm(data);
             base_cum = cumsum(data);
+            base_cum = base_cum ./ norm(base_cum);
         else
+            temp = data ./ norm(data);
+            temp_sum = cumsum(data);
+            temp_sum = temp_sum ./ norm(temp_sum);
+            distances = [distances, [ norm(base_histo - temp); norm(base_cum - temp_sum)]];
+            
             % str
             % corrcoef(base_histo, data)
             % corrcoef(base_cum, cumsum(data))
             % norm(base_histo - data)
             % norm(base_cum - cumsum(data))
         end
-        
         color = colors(ci, :);
         ci = ci + 1;
         
@@ -49,7 +56,8 @@ for i = 1 : length(files)
         
         tline = fgetl(fid);
     end
-    
+    filename
+    all_distances = [all_distances; distances];
     fclose(fid);
     
     figure(hFig);
