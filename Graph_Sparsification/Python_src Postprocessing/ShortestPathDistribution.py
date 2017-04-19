@@ -8,7 +8,7 @@ output_sp = 'results/'
 # suppose diameter won't surpass 1500
 # ignore distances that larger than 100
 cut_off = 25
-iteration = 4
+iteration = 5
 rets_apsp = {}
 
 if __name__ == '__main__':
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
         for k in range(1, cut_off + 1):
             ret[k] /= num_pair
-        print(ret)
+        # print(ret)
         if prefix_name in rets_apsp:
             rets_apsp[prefix_name] = [x + y for x, y in zip(ret, rets_apsp[prefix_name])]
         else:

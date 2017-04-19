@@ -148,6 +148,7 @@ void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
 	add_set_to_assign(assignment, to_be_assign);
 	int td = 1;
 	while (!to_be_assign.empty()) {
+		vector<pair<int, int>> this_turn;
 		for (auto& node : to_be_assign) {
 			vector<int> candidates;
 			int max_size = MAX_SIZE;
@@ -164,9 +165,13 @@ void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
 				}
 			}
 			int r = rand() % (int) candidates.size();
-			assignment[node] = candidates[r];
+//			assignment[node] = candidates[r]; //!!!!!!!!!!!
+			this_turn.push_back(make_pair(node, candidates[r]));
 			cnt_cluster[candidates[r]]++;
 			depth[node] = td;
+		}
+		for(auto item: this_turn) {
+			assignment[item.first] = item.second;
 		}
 		add_set_to_assign(assignment, to_be_assign);
 		td++;
