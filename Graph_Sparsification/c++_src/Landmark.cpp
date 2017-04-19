@@ -87,6 +87,9 @@ void Landmark::construct_graph_apsp(vector<int>& assignment, vector<int>& depth,
 		vector<Edge>& ret) {
 	ret.clear();
 	map<pair<int, int>, int> connections;
+//	for(int i = 0; i<N; i++) {
+//		cerr << i << ": " << assignment[i] << " " <<  depth[i] << endl;
+//	}
 	for (int i = 0; i < N; i++) {
 		int a = assignment[i];
 		for (auto& child : network.graph.adjlink[i]) {

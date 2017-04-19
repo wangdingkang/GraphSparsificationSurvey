@@ -105,6 +105,7 @@ void OutputGraph::output_subset_spd(string filename,
 	fout << fixed << setprecision(4);
 	fout.open(filename);
 	for (auto &item : dist) {
+//		cerr << item.second.size() << endl;
 		for (auto &v : item.second) {
 			fout << v / iteration << " ";
 		}

@@ -8,7 +8,7 @@ output_sp = 'results/'
 # suppose diameter won't surpass 1500
 # ignore distances that larger than 100
 cut_off = 25
-iteration = 10
+iteration = 4
 rets_apsp = {}
 
 if __name__ == '__main__':
@@ -38,19 +38,25 @@ if __name__ == '__main__':
             if cnt % 100 == 0:
                 print(str(cnt) + ' nodes processed.')
             path_length=nx.single_source_dijkstra_path_length(G, node, weight='weight', cutoff=cut_off)
+            # print(path_length)
             # avg += sum(path_length.values())#
             for k, d in path_length.items():
+                # print(str(d) + " " + str(int(d)) + " ")
+                # if int(d) == 1:
+                #    print(node + ' ' + k)
                 ret[int(d)] += 1
             cnt += 1
         # distance to itself is 0, we need to zero it out.
         ret[0] = 0
+
         for k in range(1, cut_off + 1):
             ret[k] /= num_pair
+        print(ret)
         if prefix_name in rets_apsp:
             rets_apsp[prefix_name] = [x + y for x, y in zip(ret, rets_apsp[prefix_name])]
         else:
             rets_apsp[prefix_name] = ret
-        print(rets_apsp[prefix_name])
+        # print(rets_apsp[prefix_name])
 
     print('Finished, writing...')
     # output histogram
