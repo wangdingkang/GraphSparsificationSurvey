@@ -79,4 +79,4 @@ for i = 1 : length(files)
     close(hFig);
     close(acFig);
 end
-
+fclose('all');
