@@ -1,6 +1,9 @@
 input = 'asps/';
 files = dir(strcat(input, '*ALL.txt'));
-colors = [1 0 0; 0.8 0 0; 0.6 0 0; 0 1 0; 0 0.8 0; 0 0.6 0;  0 0 1; 0 0 0.8; 0 0 0.6;1 1 0; 0.8 0.8 0; 0.6 0.6 0];
+colors = [1 0 0; 0.8 0 0; 0.6 0 0; 0.4 0 0; 0 1 0; 0 0.8 0; 0 0.6 0; 0 0.4 0 0 0 1; 0 0 0.8; 0 0 0.6 0 0 0.4;1 1 0; 0.8 0.8 0; 0.6 0.6 0; 0.4 0.4 0];
+
+
+tot_size = 16;
 
 datum = [];
 lens = size(colors);
@@ -29,14 +32,12 @@ for i = 1 : length(files)
         
         data = str2double(C(1, 1:(s-1)));
         datum = [datum; data];
-        if ci > size(colors)
+        
+        if ci > tot_size
             ci = 1;
             marker = 'x-';
         end
         color = colors(ci, :);
-        
-        datum(ci, :)
-        data
         
         if strcmp(marker, 'x-') == 1
             distances = [distances; norm(datum(ci, :) ./ norm(datum(ci, :)) - data ./ norm(data))];
