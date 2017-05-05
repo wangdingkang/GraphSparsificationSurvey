@@ -23,7 +23,7 @@
 #define FOREST_FIRE_K 5	// the number of neighbors picked ~ Geo(K).
 
 // int SAMPLE_SIZE = 1000; // default to 1000, but reset to SAMPLE_RATE * the size of original graph.
-vector<int> SAMPLE_SIZES = { 500, 1000, 2000 }; //, 1000, 1500, 2000 };
+vector<double> SAMPLE_RATES = { 0.10, 0.20, 0.40 }; //, 1000, 1500, 2000 };
 
 vector<string> fetch_all_input_files(const string input_folder) {
 	struct dirent *entry;
@@ -58,7 +58,9 @@ int main() {
 		int original_graph_size = g->num_nodes();
 		cout << "Original graph has " << original_graph_size << " nodes."
 				<< endl;
-		for (auto SAMPLE_SIZE : SAMPLE_SIZES) {
+		for (auto SAMPLE_RATE : SAMPLE_RATES) {
+
+			int SAMPLE_SIZE =  SAMPLE_RATE * g->num_nodes();
 
 			string landmarkU_key = "LCC_Landmark_Uniform_"
 					+ to_string(SAMPLE_SIZE) + "_subset.txt";
@@ -190,8 +192,8 @@ int main() {
 //						sb->subset);
 
 				delete sb;
-
-				cout << "Snowball Sampling Finished." << endl;
+//
+//				cout << "Snowball Sampling Finished." << endl;
 
 			}
 		}
