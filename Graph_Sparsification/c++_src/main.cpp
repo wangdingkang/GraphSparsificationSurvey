@@ -58,9 +58,11 @@ int main() {
 		int original_graph_size = g->num_nodes();
 		cout << "Original graph has " << original_graph_size << " nodes."
 				<< endl;
+		int start_s = clock();
+
 		for (auto SAMPLE_RATE : SAMPLE_RATES) {
 
-			int SAMPLE_SIZE =  SAMPLE_RATE * g->num_nodes();
+			int SAMPLE_SIZE = SAMPLE_RATE * g->num_nodes();
 
 			string landmarkU_key = "LCC_Landmark_Uniform_"
 					+ to_string(SAMPLE_SIZE) + "_subset.txt";
@@ -202,6 +204,11 @@ int main() {
 				subset_pairwise, ITERATION);
 
 		delete g;
+
+		// the code you wish to time goes here
+		int stop_s = clock();
+		cout << "time: " << (stop_s - start_s) / double(CLOCKS_PER_SEC) * 1000
+				<< endl;
 	}
 	delete out;
 	return 0;
