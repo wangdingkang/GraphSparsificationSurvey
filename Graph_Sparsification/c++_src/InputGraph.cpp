@@ -41,9 +41,6 @@ void InputGraph::read_in_graph() {
 	std::getline(fin, temp);
 
 	t = split(temp);
-//	for(auto &s : t) {
-//		cout << s << endl;
-//	}
 
 	if (t.size() == 4) {
 		cout << "Input file is weighted." << endl;
@@ -76,8 +73,8 @@ void InputGraph::read_in_graph() {
 	fin.close();
 }
 
-vector<int> InputGraph::degree_random_sample(int S) {
-	// cerr << "in" << endl;
+vector<int> InputGraph::degree_random_sample(int S) const {
+	assert(S <= N);
 	const double ERROR = 1e-6;
 	vector<int> rets;
 	vector<double> sum_deg(N + 1);
@@ -108,11 +105,23 @@ vector<int> InputGraph::degree_random_sample(int S) {
 		if ((int) rets.size() == S)
 			break;
 	}
-	// cerr << "out" << endl;
+
 	return rets;
 }
 
-vector<double> InputGraph::sp_distribution(unordered_set<int> &indexes, int cut_off) {
+vector<int> InputGraph::uniform_random_sample(int S) const {
+	assert(S <= N);
+	vector<int> randoms;
+	for (int i = 0; i < N; i++) {
+		randoms.push_back(i);
+	}
+	srand(time(NULL));
+	random_shuffle(randoms.begin(), randoms.end());
+	return vector<int>(randoms.begin(), randoms.begin() + S);
+}
+
+vector<double> InputGraph::sp_distribution(unordered_set<int> &indexes,
+		int cut_off) {
 	vector<int> vindexes(indexes.size());
 	copy(indexes.begin(), indexes.end(), vindexes.begin());
 	return sp_distribution(vindexes, cut_off);
@@ -127,10 +136,9 @@ vector<double> InputGraph::sp_distribution(vector<int> &indexes, int cut_off) {
 	int num_nodes = indexes.size();
 	double num_pairs = num_nodes * (num_nodes - 1);
 	for (int i = 0; i < num_nodes; i++) {
-		// cout << i << endl;
 		sp_bfs(rets, map, indexes[i], cut_off);
 	}
-	for(auto& v : rets) {
+	for (auto& v : rets) {
 		v /= num_pairs;
 	}
 	return rets;

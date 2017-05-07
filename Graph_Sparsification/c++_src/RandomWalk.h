@@ -21,23 +21,27 @@ class RandomWalk {
 public:
 	RandomWalk();
 
+	// size of sampled graph
 	int sampled_size;
 
+	// indexes of sampled nodes
 	unordered_set<int> subset;
 
-	vector<Edge> get_sampled_graph(const AdjLinkGraph& graph, int sampled_size, random_walk_type t, double p = 0.1);
+	//	return sampled graph via a list of edges
+	EdgeGraph get_sampled_graph(const AdjLinkGraph& graph, int sampled_size, random_walk_type t, double p = 0.1);
 
 	virtual ~RandomWalk();
 
 
 private:
 
+	// pure random walk without restart
 	EdgeGraph rw_sampled_points(const AdjLinkGraph& graph, int sampled_size);
 
 	// random walk with jump.
+	/*############################################ need to rewrite*/
 	vector<int> rwj_sampled_points(const AdjLinkGraph& graph, int sampled_size, double jump_prob );
 
-	vector<Edge> graph_from_sampled_points(const AdjLinkGraph& graph, vector<int> &nodes);
 };
 
 #endif /* RANDOMWALK_H_ */

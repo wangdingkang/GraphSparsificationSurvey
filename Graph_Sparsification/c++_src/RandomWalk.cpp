@@ -12,7 +12,7 @@ RandomWalk::RandomWalk() {
 	sampled_size = 0;
 }
 
-vector<Edge> RandomWalk::get_sampled_graph(const AdjLinkGraph& graph,
+EdgeGraph RandomWalk::get_sampled_graph(const AdjLinkGraph& graph,
 		int sampled_size, random_walk_type t, double p) {
 	vector<int> nodes;
 	vector<Edge> ret;
@@ -31,32 +31,6 @@ vector<Edge> RandomWalk::get_sampled_graph(const AdjLinkGraph& graph,
 	return ret;
 }
 
-/*
- * Do not use this. In rw, it's common to only include the traversed edges, not all edges that have both end points included.
- */
-vector<Edge> RandomWalk::graph_from_sampled_points(const AdjLinkGraph& graph,
-		vector<int> &nodes) {
-	vector<Edge> ret;
-	int n = graph.get_num_of_nodes();
-	sampled_size = nodes.size();
-	bool has_this_point[n];
-	memset(has_this_point, false, sizeof(has_this_point));
-	for (auto p : nodes) {
-		has_this_point[p] = true;
-	}
-
-	for (auto p : nodes) {
-		for (auto t : graph.adjlink[p]) {
-			if (has_this_point[t.v]) {
-				ret.push_back(Edge(p, t.v, t.w));
-			}
-		}
-	}
-
-	return ret;
-}
-
-// pure random walk without restart
 EdgeGraph RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
 		int sampled_size) {
 	int n = graph.get_num_of_nodes();
@@ -95,7 +69,7 @@ EdgeGraph RandomWalk::rw_sampled_points(const AdjLinkGraph& graph,
 	return ret;
 }
 
-// random walk without jump
+
 vector<int> RandomWalk::rwj_sampled_points(const AdjLinkGraph& graph,
 		int sampled_size, double jump_prob) {
 	int n = graph.get_num_of_nodes();
@@ -120,7 +94,8 @@ vector<int> RandomWalk::rwj_sampled_points(const AdjLinkGraph& graph,
 			int m = graph.get_num_edge_of_node(s);
 			int next = rand() % m;
 			s = graph.adjlink[s][next].v;
-		} else { // jump to a random point.
+		} else {
+			// jump to a random point.
 			int next = rand() % n;
 			s = next;
 		}

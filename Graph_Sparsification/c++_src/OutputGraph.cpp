@@ -9,7 +9,6 @@
 
 OutputGraph::OutputGraph() {
 	// TODO Auto-generated constructor stub
-
 }
 
 string get_random_rgd() {
@@ -59,7 +58,8 @@ void OutputGraph::output_cluster_size_distribution(string filename,
 		vector<int>& cnt_cluster) {
 
 	int maxv = *max_element(cnt_cluster.begin(), cnt_cluster.end());
-	int cnt[maxv + 1] = { 0 };
+	int cnt[maxv + 1];
+	memset(cnt, 0, sizeof(cnt));
 	for (auto& t : cnt_cluster) {
 		cnt[t]++;
 	}
@@ -105,7 +105,6 @@ void OutputGraph::output_subset_spd(string filename,
 	fout << fixed << setprecision(4);
 	fout.open(filename);
 	for (auto &item : dist) {
-//		cerr << item.second.size() << endl;
 		for (auto &v : item.second) {
 			fout << v / iteration << " ";
 		}

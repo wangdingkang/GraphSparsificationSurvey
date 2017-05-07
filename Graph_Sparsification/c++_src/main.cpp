@@ -7,14 +7,10 @@
 #include "Landmark.h"
 #include <dirent.h>
 
-#define INPUT_FOLDER "input/"
+#define INPUT_FOLDER "input/"	// input folder
 
-//#define LANDMARK_DEPTH 1	// Each selected landmark will 'govern' all nodes in 2 HOPs
-
-//#define SAMPLE_RATE 0.075	// how much fraction to be sampled
-
-#define ITERATION 100
-#define CUT_OFF 25
+#define ITERATION 100	// for each sampling rate, and each network, and each sampling method, we run 100 iterations and then average the results.
+#define CUT_OFF 25		// cut_off don't care about shortest paths with length larger than 25
 
 #define SNOWBALL_N 1	// The size of starting set
 #define SNOWBALL_K 5	// each time pick random K neighbors of each nodes in previous set.
@@ -22,9 +18,11 @@
 #define FOREST_FIRE_N 1	// similar as SNOWBALL_N
 #define FOREST_FIRE_K 5	// the number of neighbors picked ~ Geo(K).
 
-// int SAMPLE_SIZE = 1000; // default to 1000, but reset to SAMPLE_RATE * the size of original graph.
-vector<double> SAMPLE_RATES = { 0.10, 0.20, 0.40 }; //, 1000, 1500, 2000 };
+vector<double> SAMPLE_RATES = { 0.10, 0.20, 0.40 }; //sampling rates, 10%, 20% to 40%.
 
+map<string, vector<double>> subset_pairwise;	// results for shortest path length distribution
+
+// read in all networks under input folder
 vector<string> fetch_all_input_files(const string input_folder) {
 	struct dirent *entry;
 	DIR *dp;
@@ -44,8 +42,6 @@ vector<string> fetch_all_input_files(const string input_folder) {
 	closedir(dp);
 	return filenames;
 }
-
-map<string, vector<double>> subset_pairwise;
 
 int main() {
 
@@ -108,11 +104,6 @@ int main() {
 						"output/LandmarkDApsp_" + to_string(SAMPLE_SIZE) + "_"
 								+ to_string(iteration) + "_" + filename,
 						ld->ret_apsp);
-//				out->output_subset(
-//						"output/LandmarkDSubset_" + to_string(SAMPLE_SIZE) + "_"
-//								+ to_string(iteration) + "_" + filename,
-//						ld->subset);
-
 				delete ld;
 
 				cout << "Landmark Sampling Degree Finished." << endl;
@@ -137,11 +128,6 @@ int main() {
 						"output/LandmarkUApsp_" + to_string(SAMPLE_SIZE) + "_"
 								+ to_string(iteration) + "_" + filename,
 						lu->ret_apsp);
-//				out->output_subset(
-//						"output/LandmarkUSubset_" + to_string(SAMPLE_SIZE) + "_"
-//								+ to_string(iteration) + "_" + filename,
-//						lu->subset);
-
 				delete lu;
 
 				cout << "Landmark Uniform Sampling Finished." << endl;
@@ -162,10 +148,6 @@ int main() {
 				out->output_weighted(
 						"output/RandomWalk_" + to_string(SAMPLE_SIZE) + "_"
 								+ to_string(iteration) + "_" + filename, o3);
-//				out->output_subset(
-//						"output/RandomWalkSubset_" + to_string(SAMPLE_SIZE)
-//								+ "_" + to_string(iteration) + "_" + filename,
-//						rw->subset);
 				delete rw;
 
 				cout << "RandomWalk Sampling Finished." << endl;
@@ -187,16 +169,7 @@ int main() {
 				out->output_weighted(
 						"output/Snowball_" + to_string(SAMPLE_SIZE) + "_"
 								+ to_string(iteration) + "_" + filename, o4);
-
-//				out->output_subset(
-//						"output/SnowballSubset_" + to_string(SAMPLE_SIZE) + "_"
-//								+ to_string(iteration) + "_" + filename,
-//						sb->subset);
-
 				delete sb;
-//
-//				cout << "Snowball Sampling Finished." << endl;
-
 			}
 		}
 		// write subset_distribution
@@ -205,7 +178,7 @@ int main() {
 
 		delete g;
 
-		// the code you wish to time goes here
+		// output time consumed
 		int stop_s = clock();
 		cout << "time: " << (stop_s - start_s) / double(CLOCKS_PER_SEC) * 1000
 				<< endl;
@@ -213,40 +186,3 @@ int main() {
 	delete out;
 	return 0;
 }
-
-//				out->output_weighted(
-//						"output/Landmark_" + to_string(SAMPLE_SIZE) + "_"
-//								+ to_string(iteration) + "_" + filename,
-//						l->ret_eigen);
-
-//				out->output_assignment(
-//						"output/landmarkAssignment_" + to_string(SAMPLE_SIZE)
-//								+ "_" + to_string(iteration) + "_" + filename
-//								+ ".csv", l->assignment, l->cnt_cluster);
-//				out->output_cluster_size_distribution(
-//						"output/landmarkClusterDistribution_"
-//								+ to_string(SAMPLE_SIZE) + "_"
-//								+ to_string(iteration) + "_" + filename,
-//						l->cnt_cluster);
-
-//			RandomNode Sampling
-//			RandomNode* rn = new RandomNode();
-//			EdgeGraph o2 = rn->get_sampled_graph(g->get_graph(), SAMPLE_SIZE);
-//			cout << "Random Node Sampling sampled " << SAMPLE_SIZE
-//					<< " nodes, and " << o2.size() << " edges." << endl;
-//			out->output_weighted("output/RandomNode_" + to_string(iteration) + "_" + filename, o2);
-//			delete rn;
-//
-//			cout << "Random node Sampling Finished." << endl;
-
-//		// Forest Fire Sampling
-//		ForestFireSampling* ffs = new ForestFireSampling();
-//		EdgeGraph o5 = ffs->ffs_sampling_with_size(g->get_graph(),
-//				FOREST_FIRE_N,
-//				FOREST_FIRE_K, SAMPLE_SIZE);
-//		cout << "Forest Fire Sampling with size sampled " << ffs->sampled_size
-//				<< " nodes." << endl;
-//		out->output_weighted("output/forest_fire_" + filename, o5);
-//		delete ffs;
-
-//		cout << "Forest Fire Sampling Finished." << endl << endl;
