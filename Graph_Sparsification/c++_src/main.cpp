@@ -13,7 +13,7 @@
 
 //#define SAMPLE_RATE 0.075	// how much fraction to be sampled
 
-#define ITERATION 5
+#define ITERATION 100
 #define CUT_OFF 25
 
 #define SNOWBALL_N 1	// The size of starting set

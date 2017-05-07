@@ -124,7 +124,7 @@ vector<double> InputGraph::sp_distribution(vector<int> &indexes, int cut_off) {
 	vector<double> rets(cut_off + 1);
 	fill(rets.begin(), rets.end(), 0);
 	unordered_set<int> map(indexes.begin(), indexes.end());
-	double num_nodes = indexes.size();
+	int num_nodes = indexes.size();
 	double num_pairs = num_nodes * (num_nodes - 1);
 	for (int i = 0; i < num_nodes; i++) {
 		// cout << i << endl;
