@@ -7,7 +7,7 @@
 
 #include "Landmark.h"
 
-#define MAX_SIZE 1000000 // maximal size of a cluster
+#define MAX_SIZE 10000000 // maximal size of a cluster
 
 Landmark::Landmark(const InputGraph &graph) {
 	this->network = &graph;
@@ -50,25 +50,28 @@ void Landmark::landmark_sampling(int S, landmark_type t) {
 void Landmark::construct_graph_apsp(vector<int>& assignment, vector<int>& depth,
 		vector<Edge>& ret) {
 	ret.clear();
-	map<pair<int, int>, int> connections;
+	unordered_map<long long, int> connections;
 	for (int i = 0; i < N; i++) {
 		int a = assignment[i];
 		for (auto& child : network->graph.adjlink[i]) {
 			int b = assignment[child.v];
 			if (a != b) {
-				pair<int, int> tp = make_pair(min(a, b), max(a, b));
+//				pair<int, int> tp = make_pair(min(a, b), max(a, b));
+				int u = min(a, b);
+				int v = max(a, b);
+				long long key = (long long)u * N + v;
 				int distance = depth[i] + depth[child.v] + 1;
-				if (connections.find(tp) != connections.end()) {
-					connections[tp] = min(connections[tp], distance);
+				if (connections.find(key) != connections.end()) {
+					connections[key] = min(connections[key], distance);
 				} else {
-					connections.insert(make_pair(tp, distance));
+					connections.insert(make_pair(key, distance));
 				}
 			}
 		}
 	}
 	for (auto& ele : connections) {
-		int u = ele.first.first;
-		int v = ele.first.second;
+		int u = ele.first / N;
+		int v = ele.first % N;
 		ret.push_back(Edge(u, v, ele.second)); // using shortest path between two landmarks.
 	}
 }
@@ -76,30 +79,31 @@ void Landmark::construct_graph_apsp(vector<int>& assignment, vector<int>& depth,
 void Landmark::construct_graph_eigen(vector<int>& assignment,
 		vector<int> &cnt_cluster, vector<Edge>& ret) {
 	ret.clear();
-	map<pair<int, int>, double> connections;
+	unordered_map<long long, double> connections;
 	for (int i = 0; i < N; i++) {
 		int a = assignment[i];
 		for (auto& child : network->graph.adjlink[i]) {
 			int b = assignment[child.v];
 			if (a != b) {
-				pair<int, int> tp = make_pair(min(a, b), max(a, b));
-				if (connections.find(tp) != connections.end()) {
-					connections[tp] = connections[tp] + child.w;
+				int u = min(a, b);
+				int v = max(a, b);
+				long long key = (long long)u * N + v;
+				if (connections.find(key) != connections.end()) {
+					connections[key] = connections[key] + child.w;
 				} else {
-					connections.insert(make_pair(tp, child.w));
+					connections.insert(make_pair(key, child.w));
 				}
 			}
 		}
 	}
 	for (auto& ele : connections) {
-		int u = ele.first.first;
-		int v = ele.first.second;
+		int u = ele.first / N;
+		int v = ele.first % N;
 		ret.push_back(
 				Edge(u, v,
 						ele.second / (2.0f * cnt_cluster[u] * cnt_cluster[v]))); // using edge density.
 	}
 }
-
 
 void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
 		const vector<int>& landmarks, vector<int>& cnt_cluster,
@@ -129,7 +133,7 @@ void Landmark::assign_nodes_to_landmarks(vector<int>& assignment,
 			cnt_cluster[candidates[r]]++;
 			depth[node] = td;
 		}
-		for(auto item: this_turn) {
+		for (auto item : this_turn) {
 			assignment[item.first] = item.second;
 		}
 		add_set_to_assign(assignment, to_be_assign);

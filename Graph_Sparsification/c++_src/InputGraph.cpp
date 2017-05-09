@@ -73,39 +73,27 @@ void InputGraph::read_in_graph() {
 	fin.close();
 }
 
+
+bool pairCompare(const pair<double, int> &a, const pair<double, int> &b) {
+	return a.first < b.first;
+}
+
 vector<int> InputGraph::degree_random_sample(int S) const {
 	assert(S <= N);
-	const double ERROR = 1e-6;
-	vector<int> rets;
-	vector<double> sum_deg(N + 1);
-	bool visited[N];
-	memset(visited, false, sizeof(visited));
-
-	vector<double> temp = this->graph.degrees;
-
-	for (int i = 1; i <= N; i++) {
-		sum_deg[i] = sum_deg[i - 1] + temp[i - 1];
-	}
-
-	double tsum = sum_deg[N];
-
+//	vector<double> temp = this->graph.degrees;
 	srand(time(NULL));
-
-	while (true) {
-		double randd = (double) rand() / RAND_MAX * tsum;
-		int index = lower_bound(sum_deg.begin(), sum_deg.end(), randd - ERROR)
-				- sum_deg.begin() - 1;
-		index = max(0, index);
-
-		if (!visited[index]) {
-			visited[index] = true;
-			rets.push_back(index);
-		}
-
-		if ((int) rets.size() == S)
-			break;
+	vector<pair<double, int>> value(N);
+	for (int i = 0; i < N; i++) {
+		double r = (double)rand() / RAND_MAX;
+		double exps = -log(r);
+		value[i].first = exps / graph.degrees[i];
+		value[i].second = i;
 	}
-
+	vector<int> rets;
+	sort(value.begin(), value.end(), pairCompare);
+	for(int i = 0; i<S; i++) {
+		rets.push_back(value[i].second);
+	}
 	return rets;
 }
 
