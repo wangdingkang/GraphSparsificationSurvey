@@ -123,6 +123,7 @@ vector<double> InputGraph::sp_distribution(vector<int> &indexes, int cut_off) {
 	unordered_set<int> map(indexes.begin(), indexes.end());
 	int num_nodes = indexes.size();
 	double num_pairs = num_nodes * (num_nodes - 1);
+	// #pragma omp parallel for
 	for (int i = 0; i < num_nodes; i++) {
 		sp_bfs(rets, map, indexes[i], cut_off);
 	}
@@ -142,6 +143,7 @@ void InputGraph::sp_bfs(vector<double> &rets, unordered_set<int> &indexes,
 	while (!q.empty()) {
 		auto t = q.front();
 		if (t.second != 0 && indexes.count(t.first)) {
+			// #pragma omp atomic
 			rets[t.second]++;
 		}
 
