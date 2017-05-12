@@ -43,7 +43,6 @@ void InputGraph::read_in_graph() {
 	t = split(temp);
 
 	if (t.size() == 4) {
-		cout << "Input file is weighted." << endl;
 		graph.weighted = true;
 		graph.insert_link(std::stoi(t[0]), std::stoi(t[1]), std::stod(t[2]));
 		graph.insert_link(std::stoi(t[1]), std::stoi(t[0]), std::stod(t[2]));
@@ -55,7 +54,6 @@ void InputGraph::read_in_graph() {
 		}
 		graph.init_degree();
 	} else if (t.size() == 3) {
-		cout << "Input file is unweighted." << endl;
 		graph.weighted = false;
 		graph.insert_link(std::stoi(t[0]), std::stoi(t[1]));
 		graph.insert_link(std::stoi(t[1]), std::stoi(t[0]));
@@ -117,7 +115,6 @@ vector<double> InputGraph::sp_distribution(unordered_set<int> &indexes,
 
 vector<double> InputGraph::sp_distribution(vector<int> &indexes, int cut_off) {
 	// 0 - cut_off
-	cout << "Calculating subset sp distribution.." << endl;
 	vector<double> rets(cut_off + 1);
 	fill(rets.begin(), rets.end(), 0);
 	unordered_set<int> map(indexes.begin(), indexes.end());

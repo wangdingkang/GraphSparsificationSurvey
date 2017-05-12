@@ -1,7 +1,7 @@
 /*
  * OutputGraph.cpp
  *
- *  Created on: 2017Äê1ÔÂ9ÈÕ
+ *  Created on: 2017ï¿½ï¿½1ï¿½ï¿½9ï¿½ï¿½
  *      Author: Dingkang Wang
  */
 
